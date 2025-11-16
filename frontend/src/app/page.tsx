@@ -6,7 +6,7 @@ export default function Home () {
     <>
       {/* Hero Section */}
       <div className='my-12 text-center'>
-        <h1 className='mb-4 font-[Outfit] text-4xl font-bold'>
+        <h1 className='mb-4 font-[Outfit] text-4xl font-semibold'>
           8px.app
         </h1>
         <p className='text-lg text-gray-500'>
