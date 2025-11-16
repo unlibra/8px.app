@@ -1,0 +1,178 @@
+'use client'
+
+import { Dialog, DialogPanel, Popover, PopoverButton, PopoverPanel, Transition, TransitionChild } from '@headlessui/react'
+import { Bars3Icon, ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import Link from 'next/link'
+import { useState } from 'react'
+
+import { categories } from '@/lib/tools'
+
+import { GitHubIcon } from './icons/github-icon'
+import { LogoIcon } from './icons/logo-icon'
+import { ThemeToggle } from './theme-toggle'
+
+export function Header () {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  return (
+    <header className='border-b border-gray-200 dark:border-gray-700'>
+      <nav className='mx-auto flex h-16 max-w-screen-xl items-center justify-between px-4 sm:px-6 lg:px-8'>
+        {/* Mobile menu button */}
+        <button
+          type='button'
+          className='flex items-center justify-center rounded-lg p-2 outline-none transition hover:bg-black/5 active:bg-black/10 hover:dark:bg-white/5 active:dark:bg-white/10 sm:hidden'
+          onClick={() => setMobileMenuOpen(true)}
+          aria-label='Open menu'
+        >
+          <Bars3Icon className='size-5' />
+        </button>
+
+        {/* Logo */}
+        <Link href='/' className='flex items-center gap-2'>
+          <LogoIcon className='size-6' />
+          <h1 className='font-[Outfit] text-xl font-semibold'>8px.app</h1>
+        </Link>
+
+        {/* Desktop Navigation */}
+        <div className='hidden items-center gap-6 sm:flex'>
+          {/* Tools Dropdown */}
+          <Popover className='relative'>
+            {({ open }) => (
+              <>
+                <PopoverButton className='flex items-center gap-1 text-sm font-medium outline-none'>
+                  Tools
+                  <ChevronDownIcon className={`size-4 transition-transform ${open ? 'rotate-180' : ''}`} />
+                </PopoverButton>
+                <Transition
+                  enter='transition duration-100 ease-out'
+                  enterFrom='transform scale-95 opacity-0'
+                  enterTo='transform scale-100 opacity-100'
+                  leave='transition duration-100 ease-out'
+                  leaveFrom='transform scale-100 opacity-100'
+                  leaveTo='transform scale-95 opacity-0'
+                >
+                  <PopoverPanel className='absolute right-0 z-50 mt-1'>
+                    <div className='w-48 overflow-hidden rounded-lg border border-gray-200 bg-white p-1 shadow-lg dark:border-gray-700 dark:bg-atom-one-dark-light'>
+                      <Link
+                        href='/'
+                        className='block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-gray-100 dark:hover:bg-atom-one-dark-lighter'
+                      >
+                        All Tools
+                      </Link>
+                      <div className='my-1 border-t border-gray-200 dark:border-gray-700' />
+                      {categories.map((category) => (
+                        <a
+                          key={category.id}
+                          href={`#${category.id}`}
+                          className='block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-gray-100 dark:hover:bg-atom-one-dark-lighter'
+                        >
+                          {category.name}
+                        </a>
+                      ))}
+                    </div>
+                  </PopoverPanel>
+                </Transition>
+              </>
+            )}
+          </Popover>
+
+          {/* GitHub Link */}
+          <a
+            href={process.env.NEXT_PUBLIC_GITHUB_URL}
+            target='_blank'
+            rel='noopener noreferrer'
+            className='flex items-center justify-center rounded-full p-2 outline-none transition hover:bg-black/5 active:bg-black/10 hover:dark:bg-white/5 active:dark:bg-white/10'
+            aria-label='GitHub'
+          >
+            <GitHubIcon className='size-5' />
+          </a>
+
+          {/* Theme Toggle */}
+          <ThemeToggle />
+        </div>
+
+        {/* Mobile Theme Toggle */}
+        <div className='sm:hidden'>
+          <ThemeToggle />
+        </div>
+      </nav>
+
+      {/* Mobile menu */}
+      <Transition show={mobileMenuOpen}>
+        <Dialog onClose={setMobileMenuOpen} className='relative z-50 sm:hidden'>
+          {/* Background overlay */}
+          <TransitionChild
+            enter='ease-out duration-300'
+            enterFrom='opacity-0'
+            enterTo='opacity-100'
+            leave='ease-in duration-200'
+            leaveFrom='opacity-100'
+            leaveTo='opacity-0'
+          >
+            <div className='fixed inset-0 bg-black/20 dark:bg-black/40' />
+          </TransitionChild>
+
+          {/* Slide-in panel */}
+          <div className='fixed inset-0'>
+            <TransitionChild
+              enter='transform transition ease-out duration-300'
+              enterFrom='-translate-x-full'
+              enterTo='translate-x-0'
+              leave='transform transition ease-in duration-200'
+              leaveFrom='translate-x-0'
+              leaveTo='-translate-x-full'
+            >
+              <DialogPanel className='fixed inset-y-0 left-0 w-[85vw] max-w-sm overflow-y-auto bg-white px-4 py-4 shadow-xl dark:bg-atom-one-dark-light'>
+                <div className='flex items-center justify-between'>
+                  <Link href='/' className='flex items-center gap-2 font-[Outfit] text-xl font-semibold' onClick={() => setMobileMenuOpen(false)}>
+                    <LogoIcon className='size-6' />
+                    8px.app
+                  </Link>
+                  <button
+                    type='button'
+                    className='flex items-center justify-center rounded-lg p-2 outline-none transition hover:bg-black/5 active:bg-black/10 hover:dark:bg-white/5 active:dark:bg-white/10'
+                    onClick={() => setMobileMenuOpen(false)}
+                    aria-label='Close menu'
+                  >
+                    <XMarkIcon className='size-5' />
+                  </button>
+                </div>
+                <div className='mt-6 flow-root'>
+                  <div className='space-y-1'>
+                    <Link
+                      href='/'
+                      className='block rounded-lg px-3 py-2 text-base font-medium transition-colors hover:bg-gray-100 dark:hover:bg-atom-one-dark-lighter'
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      All Tools
+                    </Link>
+                    <div className='my-2 border-t border-gray-200 dark:border-gray-700' />
+                    {categories.map((category) => (
+                      <a
+                        key={category.id}
+                        href={`#${category.id}`}
+                        className='block rounded-lg px-3 py-2 text-base font-medium transition-colors hover:bg-gray-100 dark:hover:bg-atom-one-dark-lighter'
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        {category.name}
+                      </a>
+                    ))}
+                    <div className='my-2 border-t border-gray-200 dark:border-gray-700' />
+                    <a
+                      href={process.env.NEXT_PUBLIC_GITHUB_URL}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='block rounded-lg px-3 py-2 text-base font-medium transition-colors hover:bg-gray-100 dark:hover:bg-atom-one-dark-lighter'
+                    >
+                      GitHub
+                    </a>
+                  </div>
+                </div>
+              </DialogPanel>
+            </TransitionChild>
+          </div>
+        </Dialog>
+      </Transition>
+    </header>
+  )
+}
