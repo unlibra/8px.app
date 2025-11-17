@@ -10,13 +10,13 @@ export default function Home () {
         <div className='mb-4 flex justify-center'>
           <LogoIcon className='size-16' />
         </div>
-        <h1 className='mb-4 font-[Outfit] text-4xl font-semibold'>
+        <h1 className='mb-6 font-[Outfit] text-4xl font-semibold'>
           8px.app
         </h1>
-        <p className='text-lg text-gray-600 dark:text-gray-400'>
+        <p className='font-medium text-gray-600 dark:text-gray-400'>
           Web開発に必要なすべてを、シンプルに。
         </p>
-        <p className='text-lg text-gray-600 dark:text-gray-400'>
+        <p className='font-medium text-gray-600 dark:text-gray-400'>
           コードとデザインの境界を越え、クリエイターの想像力を刺激する便利な機能を集めました。
         </p>
       </div>
