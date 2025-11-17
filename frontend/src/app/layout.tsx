@@ -51,7 +51,7 @@ export default function RootLayout ({
 
   return (
     <html lang='ja' className={`${fontASCII.variable} ${fontJP.variable} ${fontMono.variable}`} suppressHydrationWarning>
-      <body className='bg-white text-gray-700 antialiased dark:bg-atom-one-dark dark:text-gray-300'>
+      <body className='overflow-x-hidden bg-white text-gray-700 antialiased dark:bg-atom-one-dark dark:text-gray-300'>
         <Providers>
           <div className='flex min-h-screen flex-col'>
             <Header />
