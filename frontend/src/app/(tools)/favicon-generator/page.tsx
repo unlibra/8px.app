@@ -8,10 +8,8 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Breadcrumb } from '@/components/breadcrumb'
 import { FullPageDropZone } from '@/components/full-page-drop-zone'
-import { Slider } from '@/components/slider'
 import type { FaviconSize, OutputSetId } from '@/lib/favicon-generator'
 import {
-  AVAILABLE_SIZES,
   DEFAULT_OUTPUT_SETS,
   DEFAULT_SIZES,
   generateOutputSet,
@@ -19,6 +17,8 @@ import {
 } from '@/lib/favicon-generator'
 import { downloadBlob, loadImageFromFile, processImage } from '@/lib/image-processing'
 import { createZip } from '@/lib/zip-utils'
+
+import { FaviconOptionsPanel } from './favicon-options-panel'
 
 export default function FaviconGeneratorPage () {
   const [image, setImage] = useState<HTMLImageElement | null>(null)
@@ -34,21 +34,7 @@ export default function FaviconGeneratorPage () {
   const [useBackground, setUseBackground] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [isDesktop, setIsDesktop] = useState<boolean | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
-
-  // Detect screen size for accordion default state
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(min-width: 1024px)')
-    setIsDesktop(mediaQuery.matches)
-
-    const handleChange = (e: MediaQueryListEvent) => {
-      setIsDesktop(e.matches)
-    }
-
-    mediaQuery.addEventListener('change', handleChange)
-    return () => mediaQuery.removeEventListener('change', handleChange)
-  }, [])
 
   const validateImageFile = (file: File): string | null => {
     // Validate file type
@@ -266,179 +252,34 @@ export default function FaviconGeneratorPage () {
             </div>
 
             {/* Settings Panel (Mobile Only) */}
-            {isDesktop !== null && (
-              <Disclosure key={String(isDesktop)} defaultOpen={isDesktop} as='div' className='lg:hidden'>
-                {({ open }) => (
-                  <div className={`overflow-hidden rounded-lg ${isDesktop ? '' : 'bg-gray-100 dark:bg-atom-one-dark-light'}`}>
-                    <DisclosureButton className='flex w-full items-center justify-between rounded-lg px-4 py-3 text-left font-medium transition-colors hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-700'>
-                      <h6 className='text-sm font-semibold'>設定オプション</h6>
-                      <ChevronDownIcon
-                        className={`h-5 w-5 transition-transform ${open ? 'rotate-180' : ''
-                          }`}
-                      />
-                    </DisclosureButton>
-                    <DisclosurePanel className='space-y-6 p-4'>
-                      {/* Format Selection */}
-                      <div>
-                        <div className='mb-3'>
-                          <span className='block text-sm font-semibold'>
-                            出力ファイル形式
-                          </span>
-                        </div>
-                        <div className='flex flex-wrap gap-2'>
-                          {OUTPUT_SETS.map((outputSet) => (
-                            <button
-                              key={outputSet.id}
-                              onClick={() => handleSetToggle(outputSet.id)}
-                              className={`rounded-full px-4 py-2 text-sm font-medium transition-all focus:outline-none ${selectedSets.has(outputSet.id)
-                                ? 'bg-sky-500 text-white hover:bg-sky-600 dark:bg-sky-600 dark:hover:bg-sky-500'
-                                : 'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600'
-                                }`}
-                            >
-                              {outputSet.label}
-                            </button>
-                          ))}
-                        </div>
-                        <div className='mt-4 text-xs text-gray-600 dark:text-gray-400'>
-                          {OUTPUT_SETS.map((set, i) => (
-                            <div key={set.id}>
-                              <strong>{set.label}:</strong> {set.description}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className='border-t border-gray-200 dark:border-gray-700' />
-
-                      {/* Size Selection - Only show if favicon is selected */}
-                      {selectedSets.has('favicon') && (
-                        <>
-                          <div>
-                            <div className='mb-3'>
-                              <span className='block text-sm font-semibold'>
-                                favicon.icoに含めるサイズ
-                              </span>
-                            </div>
-
-                            <div className='space-y-4'>
-                              {/* 推奨サイズ */}
-                              <div>
-                                <div className='mb-2 text-xs font-medium text-gray-700 dark:text-gray-300'>
-                                  推奨サイズ
-                                </div>
-                                <div className='flex flex-wrap gap-2'>
-                                  {DEFAULT_SIZES.map((size) => (
-                                    <button
-                                      key={size}
-                                      onClick={() => handleSizeToggle(size)}
-                                      className={`rounded-full px-4 py-2 text-sm font-medium transition-all focus:outline-none ${selectedSizes.has(size)
-                                        ? 'bg-sky-500 text-white hover:bg-sky-600 dark:bg-sky-600 dark:hover:bg-sky-500'
-                                        : 'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600'
-                                        }`}
-                                    >
-                                      {size}×{size}
-                                    </button>
-                                  ))}
-                                </div>
-                              </div>
-
-                              {/* 追加サイズ */}
-                              <div>
-                                <div className='mb-2 text-xs font-medium text-gray-600 dark:text-gray-400'>
-                                  その他サイズ
-                                </div>
-                                <div className='flex flex-wrap gap-2'>
-                                  {AVAILABLE_SIZES.filter(s => !DEFAULT_SIZES.includes(s)).map((size) => (
-                                    <button
-                                      key={size}
-                                      onClick={() => handleSizeToggle(size)}
-                                      className={`rounded-full px-4 py-2 text-sm font-medium transition-all focus:outline-none ${selectedSizes.has(size)
-                                        ? 'bg-sky-500 text-white dark:bg-sky-600'
-                                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
-                                        }`}
-                                    >
-                                      {size}×{size}
-                                    </button>
-                                  ))}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className='border-t border-gray-200 dark:border-gray-700' />
-                        </>
-                      )}
-
-                      {/* Border Radius */}
-                      <div>
-                        <div className='mb-3'>
-                          <span className='block text-sm font-semibold'>
-                            角丸の調整
-                          </span>
-                          <p className='mt-1 text-xs text-gray-600 dark:text-gray-400'>
-                            アイコンの角を丸くします。Apple Touch IconはiOSが自動的に角丸にします。
-                          </p>
-                        </div>
-                        <Slider
-                          label=''
-                          value={borderRadius}
-                          min={0}
-                          max={100}
-                          unit='%'
-                          onChange={setBorderRadius}
-                          description=''
-                        />
-                      </div>
-
-                      <div className='border-t border-gray-200 dark:border-gray-700' />
-
-                      {/* Background Color */}
-                      <div>
-                        <div className='mb-3'>
-                          <span className='block text-sm font-semibold'>
-                            背景色の設定
-                          </span>
-                          <p className='mt-1 text-xs text-gray-600 dark:text-gray-400'>
-                            透過PNGに背景色を追加します。Apple Touch Iconは常に背景色が適用されます。
-                          </p>
-                        </div>
-                        <div className='space-y-3'>
-                          <div className='flex items-center gap-2'>
-                            <input
-                              type='checkbox'
-                              id='use-background'
-                              checked={useBackground}
-                              onChange={(e) => setUseBackground(e.target.checked)}
-                              className='size-4 accent-sky-600 focus:outline-none'
-                            />
-                            <label htmlFor='use-background' className='text-sm font-medium'>
-                              背景色を追加する
-                            </label>
-                          </div>
-                          {useBackground && (
-                            <div className='flex items-center gap-3'>
-                              <input
-                                type='color'
-                                value={backgroundColor}
-                                onChange={(e) => setBackgroundColor(e.target.value)}
-                                className='h-10 w-20 cursor-pointer rounded bg-transparent focus:outline-none'
-                              />
-                              <input
-                                type='text'
-                                value={backgroundColor}
-                                onChange={(e) => setBackgroundColor(e.target.value)}
-                                placeholder='#ffffff'
-                                className='flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none dark:border-gray-600 dark:bg-atom-one-dark-light'
-                              />
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </DisclosurePanel>
-                  </div>
-                )}
-              </Disclosure>
-            )}
+            <Disclosure defaultOpen={false} as='div' className='lg:hidden'>
+              {({ open }) => (
+                <div className='overflow-hidden rounded-lg bg-gray-100 dark:bg-atom-one-dark-light'>
+                  <DisclosureButton className='flex w-full items-center justify-between rounded-lg px-4 py-3 text-left font-medium transition-colors hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-700'>
+                    <h6 className='text-sm font-semibold'>設定オプション</h6>
+                    <ChevronDownIcon
+                      className={`h-5 w-5 transition-transform ${open ? 'rotate-180' : ''
+                        }`}
+                    />
+                  </DisclosureButton>
+                  <DisclosurePanel className='p-4'>
+                    <FaviconOptionsPanel
+                      selectedSets={selectedSets}
+                      selectedSizes={selectedSizes}
+                      borderRadius={borderRadius}
+                      backgroundColor={backgroundColor}
+                      useBackground={useBackground}
+                      onSetToggle={handleSetToggle}
+                      onSizeToggle={handleSizeToggle}
+                      onBorderRadiusChange={setBorderRadius}
+                      onBackgroundColorChange={setBackgroundColor}
+                      onUseBackgroundChange={setUseBackground}
+                      checkboxIdSuffix='-mobile'
+                    />
+                  </DisclosurePanel>
+                </div>
+              )}
+            </Disclosure>
 
             {/* Preview */}
             <div className='flex flex-col'>
@@ -492,179 +333,22 @@ export default function FaviconGeneratorPage () {
           </div>
 
           {/* Right Column - Settings Panel (Desktop Only) */}
-          {isDesktop !== null && (
-            <Disclosure key={`desktop-${String(isDesktop)}`} defaultOpen={isDesktop} as='div' className='hidden lg:block lg:flex-1'>
-              {({ open }) => (
-                <div className={`overflow-hidden rounded-lg ${isDesktop ? '' : 'bg-gray-100 dark:bg-atom-one-dark-light'}`}>
-                  <DisclosureButton className='flex w-full items-center justify-between rounded-lg px-4 py-3 text-left font-medium transition-colors hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-700'>
-                    <h6 className='text-sm font-semibold'>設定オプション</h6>
-                    <ChevronDownIcon
-                      className={`h-5 w-5 transition-transform ${open ? 'rotate-180' : ''
-                        }`}
-                    />
-                  </DisclosureButton>
-                  <DisclosurePanel className='space-y-6 p-4'>
-                    {/* Format Selection */}
-                    <div>
-                      <div className='mb-3'>
-                        <span className='block text-sm font-semibold'>
-                          出力ファイル形式
-                        </span>
-                      </div>
-                      <div className='flex flex-wrap gap-2'>
-                        {OUTPUT_SETS.map((outputSet) => (
-                          <button
-                            key={outputSet.id}
-                            onClick={() => handleSetToggle(outputSet.id)}
-                            className={`rounded-full px-4 py-2 text-sm font-medium transition-all focus:outline-none ${selectedSets.has(outputSet.id)
-                              ? 'bg-sky-500 text-white hover:bg-sky-600 dark:bg-sky-600 dark:hover:bg-sky-500'
-                              : 'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600'
-                              }`}
-                          >
-                            {outputSet.label}
-                          </button>
-                        ))}
-                      </div>
-                      <div className='mt-4 text-xs text-gray-600 dark:text-gray-400'>
-                        {OUTPUT_SETS.map((set, i) => (
-                          <div key={set.id}>
-                            <strong>{set.label}:</strong> {set.description}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className='border-t border-gray-200 dark:border-gray-700' />
-
-                    {/* Size Selection - Only show if favicon is selected */}
-                    {selectedSets.has('favicon') && (
-                      <>
-                        <div>
-                          <div className='mb-3'>
-                            <span className='block text-sm font-semibold'>
-                              favicon.icoに含めるサイズ
-                            </span>
-                          </div>
-
-                          <div className='space-y-4'>
-                            {/* 推奨サイズ */}
-                            <div>
-                              <div className='mb-2 text-xs font-medium text-gray-700 dark:text-gray-300'>
-                                推奨サイズ
-                              </div>
-                              <div className='flex flex-wrap gap-2'>
-                                {DEFAULT_SIZES.map((size) => (
-                                  <button
-                                    key={size}
-                                    onClick={() => handleSizeToggle(size)}
-                                    className={`rounded-full px-4 py-2 text-sm font-medium transition-all focus:outline-none ${selectedSizes.has(size)
-                                      ? 'bg-sky-500 text-white hover:bg-sky-600 dark:bg-sky-600 dark:hover:bg-sky-500'
-                                      : 'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600'
-                                      }`}
-                                  >
-                                    {size}×{size}
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-
-                            {/* 追加サイズ */}
-                            <div>
-                              <div className='mb-2 text-xs font-medium text-gray-600 dark:text-gray-400'>
-                                その他サイズ
-                              </div>
-                              <div className='flex flex-wrap gap-2'>
-                                {AVAILABLE_SIZES.filter(s => !DEFAULT_SIZES.includes(s)).map((size) => (
-                                  <button
-                                    key={size}
-                                    onClick={() => handleSizeToggle(size)}
-                                    className={`rounded-full px-4 py-2 text-sm font-medium transition-all focus:outline-none ${selectedSizes.has(size)
-                                      ? 'bg-sky-500 text-white dark:bg-sky-600'
-                                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
-                                      }`}
-                                  >
-                                    {size}×{size}
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className='border-t border-gray-200 dark:border-gray-700' />
-                      </>
-                    )}
-
-                    {/* Border Radius */}
-                    <div>
-                      <div className='mb-3'>
-                        <span className='block text-sm font-semibold'>
-                          角丸の調整
-                        </span>
-                        <p className='mt-1 text-xs text-gray-600 dark:text-gray-400'>
-                          アイコンの角を丸くします。Apple Touch IconはiOSが自動的に角丸にします。
-                        </p>
-                      </div>
-                      <Slider
-                        label=''
-                        value={borderRadius}
-                        min={0}
-                        max={100}
-                        unit='%'
-                        onChange={setBorderRadius}
-                        description=''
-                      />
-                    </div>
-
-                    <div className='border-t border-gray-200 dark:border-gray-700' />
-
-                    {/* Background Color */}
-                    <div>
-                      <div className='mb-3'>
-                        <span className='block text-sm font-semibold'>
-                          背景色の設定
-                        </span>
-                        <p className='mt-1 text-xs text-gray-600 dark:text-gray-400'>
-                          透過PNGに背景色を追加します。Apple Touch Iconは常に背景色が適用されます。
-                        </p>
-                      </div>
-                      <div className='space-y-3'>
-                        <div className='flex items-center gap-2'>
-                          <input
-                            type='checkbox'
-                            id='use-background-desktop'
-                            checked={useBackground}
-                            onChange={(e) => setUseBackground(e.target.checked)}
-                            className='size-4 accent-sky-600 focus:outline-none'
-                          />
-                          <label htmlFor='use-background-desktop' className='text-sm font-medium'>
-                            背景色を追加する
-                          </label>
-                        </div>
-                        {useBackground && (
-                          <div className='flex items-center gap-3'>
-                            <input
-                              type='color'
-                              value={backgroundColor}
-                              onChange={(e) => setBackgroundColor(e.target.value)}
-                              className='h-10 w-20 cursor-pointer rounded bg-transparent focus:outline-none'
-                            />
-                            <input
-                              type='text'
-                              value={backgroundColor}
-                              onChange={(e) => setBackgroundColor(e.target.value)}
-                              placeholder='#ffffff'
-                              className='flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none dark:border-gray-600 dark:bg-atom-one-dark-light'
-                            />
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </DisclosurePanel>
-                </div>
-              )}
-            </Disclosure>
-          )}
+          <div className='hidden lg:block lg:flex-1'>
+            <h6 className='mb-6 text-sm font-semibold'>設定オプション</h6>
+            <FaviconOptionsPanel
+              selectedSets={selectedSets}
+              selectedSizes={selectedSizes}
+              borderRadius={borderRadius}
+              backgroundColor={backgroundColor}
+              useBackground={useBackground}
+              onSetToggle={handleSetToggle}
+              onSizeToggle={handleSizeToggle}
+              onBorderRadiusChange={setBorderRadius}
+              onBackgroundColorChange={setBackgroundColor}
+              onUseBackgroundChange={setUseBackground}
+              checkboxIdSuffix='-desktop'
+            />
+          </div>
         </div>
 
         {/* Error Message */}
