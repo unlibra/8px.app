@@ -2,7 +2,7 @@
 
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import { ExclamationTriangleIcon, LockClosedIcon, PhotoIcon } from '@heroicons/react/24/outline'
+import { ExclamationCircleIcon, LockClosedIcon, PhotoIcon, PlusIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import type { ChangeEvent } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
@@ -15,6 +15,7 @@ import {
   generateOutputSet,
   OUTPUT_SETS
 } from '@/lib/favicon-generator'
+import { validateImageFile } from '@/lib/file-validation'
 import { downloadBlob, loadImageFromFile, processImage } from '@/lib/image-processing'
 import { createZip } from '@/lib/zip-utils'
 
@@ -36,41 +37,32 @@ export default function FaviconGeneratorPage () {
   const [error, setError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const validateImageFile = useCallback((file: File): string | null => {
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      return '有効な画像ファイルを選択してください'
-    }
-
-    // Validate file size (max 10MB)
-    const maxFileSize = 10 * 1024 * 1024 // 10MB
-    if (file.size > maxFileSize) {
-      return 'ファイルサイズが大きすぎます（最大10MB）'
-    }
-
-    return null
+  const validateImageFileWrapper = useCallback(async (file: File): Promise<string | null> => {
+    return validateImageFile(file, {
+      maxSize: 10 * 1024 * 1024, // 10MB
+      maxDimensions: { width: 4096, height: 4096 }
+    })
   }, [])
 
   const handleFileSelect = useCallback(async (file: File) => {
     setError(null)
 
+    // Validate file (including magic number check)
+    const validationError = await validateImageFileWrapper(file)
+    if (validationError) {
+      setError(validationError)
+      return
+    }
+
     // Load image
     try {
       const loadedImage = await loadImageFromFile(file)
-
-      // Validate image dimensions (max 4096x4096)
-      const maxDimension = 4096
-      if (loadedImage.width > maxDimension || loadedImage.height > maxDimension) {
-        setError(`画像サイズが大きすぎます（最大${maxDimension}×${maxDimension}px）`)
-        return
-      }
-
       setImage(loadedImage)
     } catch (err) {
       setError('画像の読み込みに失敗しました')
       console.error(err)
     }
-  }, [])
+  }, [validateImageFileWrapper])
 
   const handleInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -193,10 +185,13 @@ export default function FaviconGeneratorPage () {
     }
   }, [image, selectedSets, selectedSizes, borderRadius, backgroundColor, useBackground])
 
+  const handleCloseError = useCallback(() => {
+    setError(null)
+  }, [])
+
   return (
     <FullPageDropZone
       onFileDrop={handleFileSelect}
-      validateFile={validateImageFile}
       accept='image/*'
     >
       {/* Breadcrumb */}
@@ -214,7 +209,7 @@ export default function FaviconGeneratorPage () {
         </p>
 
         {/* Privacy Notice */}
-        <div className='mb-8 flex items-center gap-3 rounded-lg border border-sky-200 bg-sky-50 p-4 text-sky-900 dark:border-gray-700 dark:bg-atom-one-dark-light dark:text-gray-300'>
+        <div className='mb-10 flex items-center gap-3 rounded-lg border border-sky-200 bg-sky-50 p-4 text-sky-900 dark:border-gray-700 dark:bg-atom-one-dark-light dark:text-gray-300'>
           <LockClosedIcon className='size-5' />
           <div className='text-sm'>
             すべての画像処理はブラウザ内で安全に実行されます。サーバーにデータは一切送信されません。
@@ -223,9 +218,16 @@ export default function FaviconGeneratorPage () {
 
         {/* Error Message */}
         {error && (
-          <div className='mb-8 flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800 dark:border-red-950 dark:bg-red-900 dark:text-red-200'>
-            <ExclamationTriangleIcon className='size-5' />
+          <div className='fixed left-0 top-0 z-50 flex h-16 w-full items-center gap-3 bg-red-100 p-4 text-sm text-red-800 shadow-lg dark:bg-red-900 dark:text-red-200'>
+            <ExclamationCircleIcon className='size-6' />
             {error ?? 'エラーテスト'}
+            <button
+              onClick={handleCloseError}
+              className='ml-auto shrink-0 rounded-lg p-1 transition-colors hover:bg-black/5 dark:hover:bg-white/5'
+              aria-label='閉じる'
+            >
+              <XMarkIcon className='size-5' />
+            </button>
           </div>
         )}
 
@@ -247,9 +249,9 @@ export default function FaviconGeneratorPage () {
               />
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className='flex items-center gap-2 rounded-lg bg-sky-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-sky-600 focus:outline-none dark:bg-sky-600 dark:hover:bg-sky-500'
+                className='flex items-center gap-2 rounded-lg bg-sky-500 px-4 py-2 text-sm font-medium text-white outline-none transition-colors hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500  dark:bg-sky-600 dark:hover:bg-sky-500 '
               >
-                <PhotoIcon className='size-5' />
+                <PlusIcon className='size-5 stroke-2' />
                 画像を選択
               </button>
               <p className='mt-2 text-xs text-gray-600 dark:text-gray-400'>
@@ -263,7 +265,7 @@ export default function FaviconGeneratorPage () {
             <Disclosure defaultOpen={false} as='div' className='lg:hidden'>
               {({ open }) => (
                 <div className='overflow-hidden rounded-lg bg-gray-100 dark:bg-atom-one-dark-light'>
-                  <DisclosureButton className='flex w-full items-center justify-between rounded-lg px-4 py-3 text-left font-medium transition-colors hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-700'>
+                  <DisclosureButton className='flex w-full items-center justify-between rounded-lg px-4 py-3 text-left font-medium outline-none transition-colors hover:bg-gray-100 dark:hover:bg-gray-700'>
                     <h6 className='text-sm font-semibold'>オプション</h6>
                     <ChevronDownIcon
                       className={`h-5 w-5 transition-transform ${open ? 'rotate-180' : ''
@@ -333,7 +335,7 @@ export default function FaviconGeneratorPage () {
               <button
                 onClick={handleGenerate}
                 disabled={!image || selectedSets.size === 0 || isGenerating}
-                className='rounded-full bg-sky-500 px-8 py-3 font-medium text-white transition-colors focus:outline-none enabled:hover:bg-sky-600 disabled:opacity-50 dark:bg-sky-600 enabled:dark:hover:bg-sky-500'
+                className='rounded-full bg-sky-500 px-8 py-3 font-medium text-white outline-none transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 enabled:hover:bg-sky-600 disabled:opacity-50 dark:bg-sky-600 enabled:dark:hover:bg-sky-500'
               >
                 ダウンロード
               </button>

@@ -45,10 +45,12 @@ export function FaviconOptionsPanel ({
             <button
               key={outputSet.id}
               onClick={() => onSetToggle(outputSet.id)}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition-all focus:outline-none ${selectedSets.has(outputSet.id)
+              className={`rounded-full px-4 py-2 text-sm font-medium outline-none transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 ${selectedSets.has(outputSet.id)
                 ? 'bg-sky-500 text-white hover:bg-sky-600 dark:bg-sky-600 dark:hover:bg-sky-500'
                 : 'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600'
                 }`}
+              aria-label={`${outputSet.label}を${selectedSets.has(outputSet.id) ? '選択解除' : '選択'}`}
+              aria-pressed={selectedSets.has(outputSet.id)}
             >
               {outputSet.label}
             </button>
@@ -86,10 +88,12 @@ export function FaviconOptionsPanel ({
                     <button
                       key={size}
                       onClick={() => onSizeToggle(size)}
-                      className={`rounded-full px-4 py-2 text-sm font-medium transition-all focus:outline-none ${selectedSizes.has(size)
+                      className={`rounded-full px-4 py-2 text-sm font-medium outline-none transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 ${selectedSizes.has(size)
                         ? 'bg-sky-500 text-white hover:bg-sky-600 dark:bg-sky-600 dark:hover:bg-sky-500'
                         : 'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600'
                         }`}
+                      aria-label={`${size}×${size}ピクセルを${selectedSizes.has(size) ? '選択解除' : '選択'}`}
+                      aria-pressed={selectedSizes.has(size)}
                     >
                       {size}×{size}
                     </button>
@@ -107,10 +111,12 @@ export function FaviconOptionsPanel ({
                     <button
                       key={size}
                       onClick={() => onSizeToggle(size)}
-                      className={`rounded-full px-4 py-2 text-sm font-medium transition-all focus:outline-none ${selectedSizes.has(size)
+                      className={`rounded-full px-4 py-2 text-sm font-medium outline-none transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 ${selectedSizes.has(size)
                         ? 'bg-sky-500 text-white dark:bg-sky-600'
                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
                         }`}
+                      aria-label={`${size}×${size}ピクセルを${selectedSizes.has(size) ? '選択解除' : '選択'}`}
+                      aria-pressed={selectedSizes.has(size)}
                     >
                       {size}×{size}
                     </button>
@@ -164,7 +170,7 @@ export function FaviconOptionsPanel ({
               id={checkboxId}
               checked={useBackground}
               onChange={(e) => onUseBackgroundChange(e.target.checked)}
-              className='size-4 accent-sky-600 focus:outline-none'
+              className='size-4 accent-sky-600 outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500'
             />
             <label htmlFor={checkboxId} className='text-sm font-medium'>
               背景色を追加する
@@ -176,14 +182,16 @@ export function FaviconOptionsPanel ({
                 type='color'
                 value={backgroundColor}
                 onChange={(e) => onBackgroundColorChange(e.target.value)}
-                className='h-10 w-20 cursor-pointer rounded bg-transparent focus:outline-none'
+                className='h-10 w-20 cursor-pointer bg-transparent outline-none focus-visible:ring-2 focus-visible:ring-sky-500'
+                aria-label='背景色を選択'
               />
               <input
                 type='text'
                 value={backgroundColor}
                 onChange={(e) => onBackgroundColorChange(e.target.value)}
                 placeholder='#ffffff'
-                className='flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none dark:border-gray-600 dark:bg-atom-one-dark-light'
+                className='flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm outline-none transition-colors focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-sky-500 dark:border-gray-600 dark:bg-atom-one-dark-light'
+                aria-label='背景色のカラーコード'
               />
             </div>
           )}

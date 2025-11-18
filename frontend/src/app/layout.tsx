@@ -30,8 +30,39 @@ const fontMono = Roboto_Mono({
 })
 
 export const metadata: Metadata = {
-  title: '8px.app | Web Developer Toolkit',
+  title: {
+    default: '8px.app | Web Developer Toolkit',
+    template: '%s | 8px.app'
+  },
   description: 'Web開発に必要なすべてを、シンプルに。コードとデザインの境界を越え、クリエイターの想像力を刺激する便利な機能を集めました。',
+  metadataBase: new URL('https://8px.app'),
+  alternates: {
+    canonical: '/'
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'ja_JP',
+    url: '/',
+    title: '8px.app | Web Developer Toolkit',
+    description: 'Web開発に必要なすべてを、シンプルに。コードとデザインの境界を越え、クリエイターの想像力を刺激する便利な機能を集めました。',
+    siteName: '8px.app'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: '8px.app | Web Developer Toolkit',
+    description: 'Web開発に必要なすべてを、シンプルに。'
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1
+    }
+  },
   icons: {
     icon: [
       { url: '/icon.svg', type: 'image/svg+xml' },

@@ -3,8 +3,23 @@ import { ToolCard } from '@/components/tool-card'
 import { categories } from '@/lib/tools'
 
 export default function Home () {
+  // JSON-LD構造化データ
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: '8px.app',
+    description: 'Web開発に必要なすべてを、シンプルに。コードとデザインの境界を越え、クリエイターの想像力を刺激する便利な機能を集めました。',
+    url: 'https://8px.app'
+  }
+
   return (
     <>
+      {/* JSON-LD構造化データ */}
+      <script
+        type='application/ld+json'
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* Hero Section */}
       <div className='my-12 text-center'>
         <div className='mb-4 flex justify-center'>

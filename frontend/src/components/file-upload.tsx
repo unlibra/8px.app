@@ -4,6 +4,7 @@ import { ArrowUpTrayIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useState } from 'react'
 
 import { CircleSpinner } from '@/components/spinner'
+import { useToast } from '@/components/toast'
 
 export interface FileUploadProps {
   accept: string // e.g., "image/*", ".pdf", ".png,.jpg"
@@ -31,13 +32,14 @@ export function FileUpload ({
   showFileList = true
 }: FileUploadProps) {
   const [isDragging, setIsDragging] = useState(false)
+  const toast = useToast()
 
   const processFiles = (files: File[]) => {
     if (files.length === 0) return
 
     // Check max files limit
     if (maxFiles && selectedFiles.length + files.length > maxFiles) {
-      alert(`最大${maxFiles}個までのファイルをアップロードできます`)
+      toast.error(`最大${maxFiles}個までのファイルをアップロードできます`)
       return
     }
 
@@ -46,7 +48,9 @@ export function FileUpload ({
       const invalidFile = files.find((file) => validateFile(file) !== null)
       if (invalidFile) {
         const errorMessage = validateFile(invalidFile)
-        alert(errorMessage)
+        if (errorMessage) {
+          toast.error(errorMessage)
+        }
         return
       }
     }

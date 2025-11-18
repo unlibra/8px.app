@@ -1,3 +1,5 @@
+'use client'
+
 import type { ChangeEvent } from 'react'
 import { useEffect, useState } from 'react'
 
@@ -71,6 +73,10 @@ export function Slider ({
           cursor: pointer;
         }
 
+        input[type="range"]:focus-visible::-webkit-slider-thumb {
+          box-shadow: 0 0 0 4px rgba(0, 166, 244, 0.3);
+        }
+
         input[type="range"]::-moz-range-thumb {
           width: 20px;
           height: 20px;
@@ -78,6 +84,10 @@ export function Slider ({
           border-radius: 50%;
           background: ${thumbBg};
           cursor: pointer;
+        }
+
+        input[type="range"]:focus-visible::-moz-range-thumb {
+          box-shadow: 0 0 0 4px rgba(0, 166, 244, 0.3);
         }
       `}
       </style>
@@ -109,7 +119,8 @@ export function Slider ({
           style={{
             background: `linear-gradient(to right, rgb(0, 166, 244) 0%, rgb(0, 166, 244) ${percentage}%, ${trackColor} ${percentage}%, ${trackColor} 100%)`
           }}
-          className='h-2 w-full cursor-pointer appearance-none rounded-full'
+          className='h-2 w-full cursor-pointer appearance-none rounded-full outline-none'
+          aria-label={label || '値を調整'}
         />
       </div>
       {description && (
