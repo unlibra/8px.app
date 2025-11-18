@@ -49,7 +49,7 @@ export default function Home () {
             {/* Tool Cards Grid */}
             <div className='grid grid-cols-1 gap-3 lg:grid-cols-2'>
               {category.tools.map((tool) => (
-                <ToolCard key={tool.id} tool={tool} />
+                <ToolCard key={tool.id} tool={tool} iconBgColor={category.iconBgColor} />
               ))}
             </div>
           </div>

@@ -11,11 +11,11 @@ export const metadata: Metadata = tool
       title: tool.name,
       description: tool.description,
       alternates: {
-        canonical: tool.href
+        canonical: `/${tool.id}`
       },
       openGraph: {
         type: 'website',
-        url: tool.href,
+        url: `/${tool.id}`,
         title: `${tool.name} - ${siteConfig.name}`,
         description: tool.description,
         siteName: siteConfig.name

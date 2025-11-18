@@ -19,7 +19,7 @@ export default function sitemap (): MetadataRoute.Sitemap {
   for (const category of categories) {
     for (const tool of category.tools) {
       routes.push({
-        url: `${baseUrl}${tool.href}`
+        url: `${baseUrl}/${tool.id}`
       })
     }
   }
