@@ -51,7 +51,7 @@ export const tools: Tool[] = [
   {
     id: 'favicon-generator',
     name: 'Faviconジェネレーター',
-    description: '画像からfaviconファイルを生成します。Apple Touch IconやAndroidアイコンもサポート。すべての処理はブラウザで安全に行われます。',
+    description: '画像からfaviconファイルやApple Touch Iconを生成します。JPEG、PNG、WEBP、SVGなどをサポート。ブラウザ上で完結するため安全です。',
     shortDescription: '画像からfaviconファイルを生成',
     icon: '/icons/tools/favicon-generator.svg',
     category: 'image'
