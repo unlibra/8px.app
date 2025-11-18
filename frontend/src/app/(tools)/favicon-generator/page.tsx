@@ -198,7 +198,7 @@ export default function FaviconGeneratorPage () {
 
       <div className='mx-auto max-w-screen-lg'>
         <h1 className='mb-4 text-3xl font-bold'>Faviconジェネレーター</h1>
-        <p className='mb-8 text-gray-600 dark:text-gray-400'>
+        <p className='mb-4 text-gray-600 dark:text-gray-400'>
           画像からfaviconファイルを生成します。Apple Touch IconやAndroidアイコンもサポート。
         </p>
 
@@ -211,7 +211,7 @@ export default function FaviconGeneratorPage () {
         </div>
 
         {/* Main Content Layout */}
-        <div className='mb-8 flex flex-col gap-8 lg:flex-row'>
+        <div className='mb-8 flex flex-col gap-12 lg:flex-row'>
           {/* Left Column */}
           <div className='flex-1 space-y-8'>
             {/* File Upload */}
@@ -245,7 +245,7 @@ export default function FaviconGeneratorPage () {
               {({ open }) => (
                 <div className='overflow-hidden rounded-lg bg-gray-100 dark:bg-atom-one-dark-light'>
                   <DisclosureButton className='flex w-full items-center justify-between rounded-lg px-4 py-3 text-left font-medium outline-none transition-colors hover:bg-gray-100 dark:hover:bg-gray-700'>
-                    <h6 className='text-sm font-semibold'>オプション</h6>
+                    <h6 className='text-sm font-semibold'>出力オプション</h6>
                     <ChevronDownIcon
                       className={`h-5 w-5 transition-transform ${open ? 'rotate-180' : ''
                         }`}
@@ -314,7 +314,7 @@ export default function FaviconGeneratorPage () {
               <button
                 onClick={handleGenerate}
                 disabled={!image || selectedSets.size === 0 || isGenerating}
-                className='rounded-full bg-sky-500 px-8 py-3 font-medium text-white outline-none transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 enabled:hover:bg-sky-600 disabled:opacity-50 dark:bg-sky-600 enabled:dark:hover:bg-sky-500'
+                className='rounded-full bg-amber-500 px-8 py-3 font-medium text-white outline-none transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 enabled:hover:bg-amber-600 disabled:bg-gray-300 disabled:text-gray-500 dark:bg-amber-600 enabled:dark:hover:bg-amber-500 disabled:dark:bg-atom-one-dark-light'
               >
                 ダウンロード
               </button>
@@ -323,7 +323,7 @@ export default function FaviconGeneratorPage () {
 
           {/* Right Column - Settings Panel (Desktop Only) */}
           <div className='hidden lg:block lg:flex-1'>
-            <h6 className='mb-6 text-sm font-semibold'>オプション</h6>
+            <h6 className='mb-4 text-sm font-semibold'>出力オプション</h6>
             <FaviconOptionsPanel
               selectedSets={selectedSets}
               selectedSizes={selectedSizes}
