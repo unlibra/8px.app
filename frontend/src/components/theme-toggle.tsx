@@ -2,7 +2,7 @@
 
 import { MoonIcon, SunIcon } from '@heroicons/react/24/solid'
 import { useTheme } from 'next-themes'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 export function ThemeToggle () {
   const [mounted, setMounted] = useState(false)
@@ -12,9 +12,9 @@ export function ThemeToggle () {
     setMounted(true)
   }, [])
 
-  const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light')
-  }
+  const toggleTheme = useCallback(() => {
+    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light')
+  }, [setTheme])
 
   // サーバーサイドではプレースホルダーを表示してレイアウトシフト回避
   if (!mounted) {

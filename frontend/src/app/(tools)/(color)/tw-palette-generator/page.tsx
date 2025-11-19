@@ -24,10 +24,24 @@ export default function TailwindPaletteGeneratorPage () {
   const [hueShift, setHueShift] = useState(0) // 0 = no shift
   const [basePalette, setBasePalette] = useState<ColorPalette | null>(null)
 
+  // Normalize color: add # prefix if missing
+  const normalizedInputColor = inputColor.startsWith('#') ? inputColor : `#${inputColor}`
+
+  // Calculate adjusted original color (with hue shift applied)
+  const adjustedOriginalColor = (() => {
+    const oklch = hexToOklch(normalizedInputColor)
+    if (!oklch || hueShift === 0) return normalizedInputColor
+    return oklchToHex({
+      l: oklch.l,
+      c: oklch.c,
+      h: normalizeHue(oklch.h + hueShift)
+    })
+  })()
+
   // Auto-generate palette with debounce when inputColor changes
   useEffect(() => {
     const timer = setTimeout(() => {
-      const generated = generatePalette(inputColor)
+      const generated = generatePalette(normalizedInputColor)
       if (generated) {
         setBasePalette(generated)
         setPalette(generated)
@@ -36,7 +50,12 @@ export default function TailwindPaletteGeneratorPage () {
     }, 100) // 100ms debounce (optimized for responsive UX)
 
     return () => clearTimeout(timer)
-  }, [inputColor])
+  }, [normalizedInputColor])
+
+  // Handle color input change
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputColor(e.target.value)
+  }, [])
 
   // Select Tailwind color
   const handleTailwindColorSelect = useCallback((name: TailwindColorName, shade: TailwindShade) => {
@@ -64,6 +83,20 @@ export default function TailwindPaletteGeneratorPage () {
       console.error('Failed to copy:', err)
     }
   }, [toast])
+
+  // Handle copy original color (with hue adjustment)
+  const handleCopyOriginalColor = useCallback(() => {
+    const oklch = hexToOklch(normalizedInputColor)
+    if (!oklch) return
+    const adjustedHex = hueShift === 0
+      ? normalizedInputColor
+      : oklchToHex({
+        l: oklch.l,
+        c: oklch.c,
+        h: normalizeHue(oklch.h + hueShift)
+      })
+    handleCopyColor(adjustedHex)
+  }, [normalizedInputColor, hueShift, handleCopyColor])
 
   // Copy as Tailwind Config
   const handleCopyAsTailwind = useCallback(() => {
@@ -106,15 +139,15 @@ export default function TailwindPaletteGeneratorPage () {
                 <div className='flex gap-3'>
                   <input
                     type='color'
-                    value={inputColor}
-                    onChange={(e) => setInputColor(e.target.value)}
+                    value={normalizedInputColor}
+                    onChange={handleInputChange}
                     className='h-12 w-20 cursor-pointer rounded border border-gray-300 focus:outline-none dark:border-gray-600'
                   />
                   <input
                     type='text'
                     value={inputColor}
-                    onChange={(e) => setInputColor(e.target.value)}
-                    placeholder='#3b82f6'
+                    onChange={handleInputChange}
+                    placeholder='#3b82f6 or 3b82f6'
                     className='flex-1 rounded-lg border border-gray-300 bg-white px-4 py-2 font-mono text-sm focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200'
                   />
                 </div>
@@ -127,7 +160,7 @@ export default function TailwindPaletteGeneratorPage () {
                   value={hueShift}
                   min={0}
                   max={360}
-                  inputColor={inputColor}
+                  inputColor={normalizedInputColor}
                   onChange={handleHueShiftChange}
                 />
               </div>
@@ -224,51 +257,21 @@ export default function TailwindPaletteGeneratorPage () {
                       </div>
                       <div className='flex items-center gap-3'>
                         <button
-                          onClick={() => {
-                            const oklch = hexToOklch(inputColor)
-                            if (!oklch) return
-                            const adjustedHex = hueShift === 0
-                              ? inputColor
-                              : oklchToHex({
-                                l: oklch.l,
-                                c: oklch.c,
-                                h: normalizeHue(oklch.h + hueShift)
-                              })
-                            handleCopyColor(adjustedHex)
-                          }}
+                          onClick={handleCopyOriginalColor}
                           className='h-12 w-12 flex-shrink-0 cursor-pointer rounded shadow-sm transition-transform hover:scale-110'
-                          style={{
-                            backgroundColor: (() => {
-                              const oklch = hexToOklch(inputColor)
-                              if (!oklch || hueShift === 0) return inputColor
-                              return oklchToHex({
-                                l: oklch.l,
-                                c: oklch.c,
-                                h: normalizeHue(oklch.h + hueShift)
-                              })
-                            })()
-                          }}
+                          style={{ backgroundColor: adjustedOriginalColor }}
                           title='クリックでコピー'
                         />
                         <div className='flex flex-1 items-center gap-4'>
                           {(() => {
-                            const oklch = hexToOklch(inputColor)
-                            if (!oklch) return null
-                            const adjustedHex = hueShift === 0
-                              ? inputColor
-                              : oklchToHex({
-                                l: oklch.l,
-                                c: oklch.c,
-                                h: normalizeHue(oklch.h + hueShift)
-                              })
-                            const rgb = hexToRgb(adjustedHex)
-                            const hsl = hexToHsl(adjustedHex)
-                            const cmyk = hexToCmyk(adjustedHex)
+                            const rgb = hexToRgb(adjustedOriginalColor)
+                            const hsl = hexToHsl(adjustedOriginalColor)
+                            const cmyk = hexToCmyk(adjustedOriginalColor)
 
                             return (
                               <>
                                 <div className='font-mono text-sm font-semibold text-gray-900 dark:text-gray-100'>
-                                  {adjustedHex.toUpperCase()}
+                                  {adjustedOriginalColor.toUpperCase()}
                                 </div>
                                 <div className='flex-1 space-y-0 text-xs leading-tight text-gray-500 dark:text-gray-500'>
                                   {rgb && (

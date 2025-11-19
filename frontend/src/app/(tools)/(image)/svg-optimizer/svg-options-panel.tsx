@@ -1,4 +1,5 @@
 import { Switch } from '@headlessui/react'
+import { useCallback } from 'react'
 
 import { Slider } from '@/components/ui/slider'
 import type { PresetId, SvgoOptions } from '@/lib/image/svgo-optimizer'
@@ -14,19 +15,27 @@ type SvgOptionsPanelProps = {
 }
 
 export function SvgOptionsPanel ({ options, onOptionsChange, selectedPreset, onPresetChange }: SvgOptionsPanelProps) {
-  const handleToggle = (key: keyof SvgoOptions) => {
+  const handleToggle = useCallback((key: keyof SvgoOptions) => {
     onOptionsChange({
       ...options,
       [key]: !options[key]
     })
-  }
+  }, [options, onOptionsChange])
 
-  const handleSliderChange = (key: keyof SvgoOptions, value: number) => {
+  const handleSliderChange = useCallback((key: keyof SvgoOptions, value: number) => {
     onOptionsChange({
       ...options,
       [key]: value
     })
-  }
+  }, [options, onOptionsChange])
+
+  const handleFloatPrecisionChange = useCallback((value: number) => {
+    handleSliderChange('floatPrecision', value)
+  }, [handleSliderChange])
+
+  const handleTransformPrecisionChange = useCallback((value: number) => {
+    handleSliderChange('transformPrecision', value)
+  }, [handleSliderChange])
 
   return (
     <div className='space-y-6'>
@@ -75,14 +84,14 @@ export function SvgOptionsPanel ({ options, onOptionsChange, selectedPreset, onP
             value={options.floatPrecision}
             min={0}
             max={10}
-            onChange={(value) => handleSliderChange('floatPrecision', value)}
+            onChange={handleFloatPrecisionChange}
           />
           <Slider
             label={PLUGIN_DESCRIPTIONS.transformPrecision}
             value={options.transformPrecision}
             min={0}
             max={10}
-            onChange={(value) => handleSliderChange('transformPrecision', value)}
+            onChange={handleTransformPrecisionChange}
           />
         </div>
       </div>

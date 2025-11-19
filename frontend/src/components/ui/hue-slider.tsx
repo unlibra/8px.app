@@ -1,7 +1,7 @@
 'use client'
 
 import type { ChangeEvent } from 'react'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { hexToOklch, normalizeHue } from '@/lib/color/color-utils'
 import { getColorNames, tailwindColors } from '@/lib/color/tailwind-colors'
@@ -26,9 +26,9 @@ export function HueSlider ({
   onChange,
   className = ''
 }: HueSliderProps) {
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     onChange(Number(e.target.value))
-  }
+  }, [onChange])
 
   const thumbBg = '#fff'
 
