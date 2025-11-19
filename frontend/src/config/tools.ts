@@ -30,14 +30,14 @@ export type Category = {
   tools: Tool[]
 }
 
-// Mock data - 実際のツール実装時に更新
+// https://api.dicebear.com/9.x/shapes/svg?backgroundColor=transparent&seed=
 export const tools: Tool[] = [
   {
-    id: 'color-palette',
-    name: 'カラーパレットジェネレーター',
-    description: '知覚的な明度制御を用いてカラーパレットを作成・調整します。',
-    shortDescription: 'カラーパレットを作成・調整',
-    icon: '/icons/tools/color-palette.svg',
+    id: 'tw-palette-generator',
+    name: 'TWパレットジェネレーター',
+    description: '好きな色からTailwindCSS風の50-950のシェードを持つカラーパレットを生成します。',
+    shortDescription: 'カラーパレットを生成',
+    icon: '/icons/tools/tw-palette-generator.svg',
     category: 'color'
   },
   {

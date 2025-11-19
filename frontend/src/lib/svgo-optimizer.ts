@@ -1,7 +1,7 @@
 import type { Config } from 'svgo/browser'
 import { optimize } from 'svgo/browser'
 
-import type { SvgoOptions } from '@/app/(tools)/svg-optimizer/svgo-options'
+import type { SvgoOptions } from '@/app/(tools)/(image)/svg-optimizer/svgo-options'
 
 /**
  * Convert our custom options format to SVGO config
