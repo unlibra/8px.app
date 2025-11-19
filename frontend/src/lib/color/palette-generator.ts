@@ -3,6 +3,7 @@
  * Generates 50-950 color scales in the style of Tailwind CSS
  */
 
+import type { LCh } from './color-utils'
 import { hexToLch, lchToHex, normalizeHue } from './color-utils'
 import type { TailwindShade } from './tailwind-colors'
 
@@ -392,6 +393,83 @@ function lerp (a: number, b: number, t: number): number {
 }
 
 /**
+ * Find the maximum chroma that stays within sRGB gamut for a given L and H
+ * Uses binary search to find the gamut boundary
+ * This matches the logic in lchToRgbWithGamutMapping to ensure consistency
+ */
+function findMaxChromaInGamut (l: number, h: number): number {
+  // Helper to convert LCh to Lab
+  const lchToLab = (lch: LCh) => {
+    const hRad = lch.h * (Math.PI / 180)
+    return {
+      l: lch.l,
+      a: lch.c * Math.cos(hRad),
+      b: lch.c * Math.sin(hRad)
+    }
+  }
+
+  // Helper to convert Lab to XYZ (simplified, matches color-utils.ts)
+  const labToXyz = (lab: { l: number, a: number, b: number }) => {
+    const D65 = { x: 95.047, y: 100.0, z: 108.883 }
+
+    const labToXyzF = (t: number): number => {
+      const delta = 6 / 29
+      if (t > delta) {
+        return Math.pow(t, 3)
+      }
+      return 3 * delta * delta * (t - 4 / 29)
+    }
+
+    const fy = (lab.l + 16) / 116
+    const fx = lab.a / 500 + fy
+    const fz = fy - lab.b / 200
+
+    return {
+      x: D65.x * labToXyzF(fx),
+      y: D65.y * labToXyzF(fy),
+      z: D65.z * labToXyzF(fz)
+    }
+  }
+
+  // Test if a color is within gamut (check linear RGB values)
+  const isInGamut = (c: number): boolean => {
+    const lab = lchToLab({ l, c, h })
+    const xyz = labToXyz(lab)
+
+    // Normalize and apply inverse sRGB matrix to get linear RGB
+    const x = xyz.x / 100
+    const y = xyz.y / 100
+    const z = xyz.z / 100
+
+    const rLinear = x * 3.2404542 + y * -1.5371385 + z * -0.4985314
+    const gLinear = x * -0.9692660 + y * 1.8760108 + z * 0.0415560
+    const bLinear = x * 0.0556434 + y * -0.2040259 + z * 1.0572252
+
+    // Check if linear RGB values are in valid range
+    return rLinear >= -0.001 && rLinear <= 1.001 &&
+           gLinear >= -0.001 && gLinear <= 1.001 &&
+           bLinear >= -0.001 && bLinear <= 1.001
+  }
+
+  // Binary search for maximum chroma
+  let low = 0
+  let high = 150 // Maximum theoretical chroma
+  let maxChroma = 0
+
+  while (high - low > 0.1) {
+    const mid = (low + high) / 2
+    if (isInGamut(mid)) {
+      maxChroma = mid
+      low = mid
+    } else {
+      high = mid
+    }
+  }
+
+  return maxChroma
+}
+
+/**
  * Generate a Tailwind-style color palette from an input color
  *
  * @param inputHex - Input color in HEX format
@@ -410,21 +488,23 @@ export function generatePalette (
   const inputLch = hexToLch(inputHex)
   if (!inputLch) return null
 
-  // Always use shade 500 as reference for chroma scaling
-  // This ignores input lightness and treats input chroma as "what shade 500 should be"
-  const shade500ExpectedChroma = getBlendedValue(inputLch.h, 500, 'chroma')
+  // Find the shade that best matches the input lightness for more accurate chroma scaling
+  const closestShade = SHADES.reduce((prev, curr) => {
+    const prevL = getBlendedValue(inputLch.h, prev, 'lightness')
+    const currL = getBlendedValue(inputLch.h, curr, 'lightness')
+    return Math.abs(currL - inputLch.l) < Math.abs(prevL - inputLch.l) ? curr : prev
+  })
 
-  // Calculate chroma scale with smooth boost for low-chroma inputs
-  // This prevents very pale colors from producing gray palettes
-  // Threshold ratio determines the balance between boosting pale colors vs preserving muted colors
-  // Lower ratio (0.3): Stronger boost for pale colors, but over-saturates muted colors
-  // Higher ratio (0.6): Preserves muted colors better, but pale colors may still look gray
-  const CHROMA_BOOST_THRESHOLD_RATIO = 0.5  // Can be adjusted between 0.3-0.6
-  const threshold = shade500ExpectedChroma * CHROMA_BOOST_THRESHOLD_RATIO
+  // Use the closest shade as reference for chroma scaling
+  const referenceChroma = getBlendedValue(inputLch.h, closestShade, 'chroma')
 
-  const baseScale = shade500ExpectedChroma > 0 ? inputLch.c / shade500ExpectedChroma : 1.0
-  const minScale = Math.min(1.0, inputLch.c / threshold)
-  const chromaScale = Math.max(minScale, baseScale)
+  // Calculate base chroma scale
+  const baseScale = referenceChroma > 0 ? inputLch.c / referenceChroma : 1.0
+
+  // Clamp chromaScale to reasonable range:
+  // - Lower bound (0.85): Prevents very low-chroma inputs from producing gray palettes
+  // - Upper bound (1.2): Allows slightly higher saturation for vivid inputs
+  const chromaScale = Math.max(0.85, Math.min(1.2, baseScale))
 
   // Use input hue directly as base (input-preserving approach)
   const baseHue = normalizeHue(inputLch.h + hueShift)
@@ -442,8 +522,11 @@ export function generatePalette (
     const l = targetL
     const h = normalizeHue(baseHue + hShift)
 
-    // Apply relative chroma scaling
-    const c = standardChroma * chromaScale
+    // Apply relative chroma scaling, clamped to gamut maximum
+    const scaledChroma = standardChroma * chromaScale
+    const maxChroma = findMaxChromaInGamut(l, h)
+    // Use 99% of max chroma to account for numerical precision in subsequent conversions
+    const c = Math.min(scaledChroma, maxChroma * 0.99)
 
     // Convert back to HEX
     const hex = lchToHex({ l, c, h })

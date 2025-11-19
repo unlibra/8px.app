@@ -1,5 +1,6 @@
 'use client'
 
+import { ClipboardDocumentIcon } from '@heroicons/react/24/outline'
 import { useCallback, useEffect, useState } from 'react'
 
 import { Breadcrumb } from '@/components/ui/breadcrumb'
@@ -50,14 +51,6 @@ export default function TailwindPaletteGeneratorPage () {
       // Slider value directly represents hue shift (0 to 360 degrees)
       const adjusted = adjustPaletteHue(basePalette, sliderValue)
       setPalette(adjusted)
-    }
-  }, [basePalette])
-
-  // Reset hue
-  const handleHueReset = useCallback(() => {
-    setHueShift(0) // Reset to no shift
-    if (basePalette) {
-      setPalette(basePalette)
     }
   }, [basePalette])
 
@@ -136,84 +129,81 @@ export default function TailwindPaletteGeneratorPage () {
                   max={360}
                   inputColor={inputColor}
                   onChange={handleHueShiftChange}
-                  onReset={handleHueReset}
                 />
               </div>
 
               {/* Tailwind Color Picker */}
               <div className='rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-atom-one-dark-light'>
-                <h2 className='mb-4 text-lg font-semibold'>Tailwindカラーから選択</h2>
-                <div className='rounded-lg border border-gray-200 p-4 dark:border-gray-700'>
-                  {/* Header Row */}
-                  <div className='mb-3 flex items-center gap-1'>
-                    <div className='w-20 shrink-0 text-xs font-medium text-gray-600 dark:text-gray-400'>
-                      {/* Color name placeholder */}
+                <h2 className='mb-4 text-lg font-semibold'>カラーパレットから選択</h2>
+                {/* Header Row */}
+                <div className='mb-3 flex items-center gap-1'>
+                  <div className='w-20 shrink-0 text-xs font-medium text-gray-600 dark:text-gray-400'>
+                    {/* Color name placeholder */}
+                  </div>
+                  {getShades().map((shade) => (
+                    <div
+                      key={shade}
+                      className='flex size-9 shrink-0 items-center justify-center text-xs font-medium text-gray-600 dark:text-gray-400'
+                    >
+                      {shade}
                     </div>
-                    {getShades().map((shade) => (
-                      <div
-                        key={shade}
-                        className='flex h-8 w-8 shrink-0 items-center justify-center text-[9px] font-medium text-gray-600 dark:text-gray-400'
-                      >
-                        {shade}
+                  ))}
+                </div>
+
+                {/* Chromatic Colors */}
+                <div className='space-y-3'>
+                  {getColorNames().filter(name => !isGrayScale(name)).map((colorName) => (
+                    <div key={colorName} className='flex items-center gap-1'>
+                      <div className='w-20 shrink-0 text-xs font-medium text-gray-600 dark:text-gray-400'>
+                        {colorName}
                       </div>
-                    ))}
-                  </div>
+                      <div className='flex gap-1'>
+                        {getShades().map((shade) => {
+                          const hex = tailwindColors[colorName][shade]
 
-                  {/* Chromatic Colors */}
-                  <div className='space-y-3'>
-                    {getColorNames().filter(name => !isGrayScale(name)).map((colorName) => (
-                      <div key={colorName} className='flex items-center gap-1'>
-                        <div className='w-20 shrink-0 text-xs font-medium text-gray-600 dark:text-gray-400'>
-                          {colorName}
-                        </div>
-                        <div className='flex gap-1'>
-                          {getShades().map((shade) => {
-                            const hex = tailwindColors[colorName][shade]
-
-                            return (
-                              <button
-                                key={shade}
-                                onClick={() => handleTailwindColorSelect(colorName, shade)}
-                                className='group relative h-8 w-8 shrink-0 rounded transition-transform hover:scale-110 focus:outline-none'
-                                style={{ backgroundColor: hex }}
-                                title='クリックで選択'
-                              >
-                                <span className='sr-only'>{colorName}-{shade}</span>
-                              </button>
-                            )
-                          })}
-                        </div>
+                          return (
+                            <button
+                              key={shade}
+                              onClick={() => handleTailwindColorSelect(colorName, shade)}
+                              className='group relative size-9 shrink-0 rounded transition-transform hover:scale-110 focus:outline-none'
+                              style={{ backgroundColor: hex }}
+                              title='クリックで選択'
+                            >
+                              <span className='sr-only'>{colorName}-{shade}</span>
+                            </button>
+                          )
+                        })}
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
+                </div>
 
-                  {/* Grayscale Colors */}
-                  <div className='mt-6 space-y-3 border-t border-gray-200 pt-6 dark:border-gray-700'>
-                    {getColorNames().filter(name => isGrayScale(name)).map((colorName) => (
-                      <div key={colorName} className='flex items-center gap-1'>
-                        <div className='w-20 shrink-0 text-xs font-medium text-gray-600 dark:text-gray-400'>
-                          {colorName}
-                        </div>
-                        <div className='flex gap-1'>
-                          {getShades().map((shade) => {
-                            const hex = tailwindColors[colorName][shade]
-
-                            return (
-                              <button
-                                key={shade}
-                                onClick={() => handleTailwindColorSelect(colorName, shade)}
-                                className='group relative h-8 w-8 shrink-0 rounded transition-transform hover:scale-110 focus:outline-none'
-                                style={{ backgroundColor: hex }}
-                                title='クリックで選択'
-                              >
-                                <span className='sr-only'>{colorName}-{shade}</span>
-                              </button>
-                            )
-                          })}
-                        </div>
+                {/* Grayscale Colors */}
+                <div className='mt-6 space-y-3 border-t border-gray-200 pt-6 dark:border-gray-700'>
+                  {getColorNames().filter(name => isGrayScale(name)).map((colorName) => (
+                    <div key={colorName} className='flex items-center gap-1'>
+                      <div className='w-20 shrink-0 text-xs font-medium text-gray-600 dark:text-gray-400'>
+                        {colorName}
                       </div>
-                    ))}
-                  </div>
+                      <div className='flex gap-1'>
+                        {getShades().map((shade) => {
+                          const hex = tailwindColors[colorName][shade]
+
+                          return (
+                            <button
+                              key={shade}
+                              onClick={() => handleTailwindColorSelect(colorName, shade)}
+                              className='group relative size-9 shrink-0 rounded transition-transform hover:scale-110 focus:outline-none'
+                              style={{ backgroundColor: hex }}
+                              title='クリックで選択'
+                            >
+                              <span className='sr-only'>{colorName}-{shade}</span>
+                            </button>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -364,9 +354,9 @@ export default function TailwindPaletteGeneratorPage () {
                         <h3 className='text-sm font-semibold text-gray-700 dark:text-gray-300'>Tailwind Config</h3>
                         <button
                           onClick={handleCopyAsTailwind}
-                          className='rounded bg-gray-200 px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+                          className='rounded-lg p-1 text-xs font-medium text-gray-800 transition-colors hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700'
                         >
-                          Copy
+                          <ClipboardDocumentIcon className='size-5' aria-label='コピー' />
                         </button>
                       </div>
                       <pre className='overflow-x-auto rounded bg-white p-3 font-mono text-xs text-gray-800 dark:bg-gray-950 dark:text-gray-200'>

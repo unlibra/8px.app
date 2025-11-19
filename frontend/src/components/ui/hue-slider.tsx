@@ -1,6 +1,5 @@
 'use client'
 
-import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import type { ChangeEvent } from 'react'
 import { useMemo } from 'react'
 
@@ -25,19 +24,10 @@ export function HueSlider ({
   max,
   inputColor,
   onChange,
-  onReset,
   className = ''
 }: HueSliderProps) {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     onChange(Number(e.target.value))
-  }
-
-  const handleReset = () => {
-    if (onReset) {
-      onReset()
-    } else {
-      onChange(0)
-    }
   }
 
   const thumbBg = '#fff'
@@ -138,18 +128,9 @@ export function HueSlider ({
       `}
       </style>
       {label && (
-        <div className='mb-2 flex items-center justify-between'>
-          <label className='text-sm font-medium'>
-            {label}
-          </label>
-          <button
-            onClick={handleReset}
-            className='rounded p-1 text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200'
-            aria-label='リセット'
-          >
-            <ArrowPathIcon className='size-4' />
-          </button>
-        </div>
+        <label className='mb-2 text-sm font-medium'>
+          {label}
+        </label>
       )}
       <div className='relative'>
         <input
