@@ -3,15 +3,15 @@
  * Analyzes Tailwind colors to extract lightness, chroma, and hue shift curves
  */
 
-import type { LCh } from '../src/lib/color-utils'
-import { hexToLch } from '../src/lib/color-utils'
-import type { TailwindColorName, TailwindShade } from '../src/lib/tailwind-colors'
+import type { LCh } from '../src/lib/color/color-utils'
+import { hexToLch } from '../src/lib/color/color-utils'
+import type { TailwindColorName, TailwindShade } from '../src/lib/color/tailwind-colors'
 import {
   getColorNames,
   getShades,
   isGrayScale,
   tailwindColors
-} from '../src/lib/tailwind-colors'
+} from '../src/lib/color/tailwind-colors'
 
 /**
  * Single color data point with metadata

@@ -2,12 +2,12 @@
 
 import { useState } from 'react'
 
-import { Breadcrumb } from '@/components/breadcrumb'
-import { hexToRgb } from '@/lib/color-utils'
-import type { ColorPalette } from '@/lib/palette-generator'
-import { adjustPaletteHue, generatePalette, getShadeLabels } from '@/lib/palette-generator'
-import type { TailwindColorName, TailwindShade } from '@/lib/tailwind-colors'
-import { getColorNames, getShades, tailwindColors } from '@/lib/tailwind-colors'
+import { Breadcrumb } from '@/components/ui/breadcrumb'
+import { hexToRgb } from '@/lib/color/color-utils'
+import type { ColorPalette } from '@/lib/color/palette-generator'
+import { adjustPaletteHue, generatePalette, getShadeLabels } from '@/lib/color/palette-generator'
+import type { TailwindColorName, TailwindShade } from '@/lib/color/tailwind-colors'
+import { getColorNames, getShades, tailwindColors } from '@/lib/color/tailwind-colors'
 
 export default function TailwindPaletteGeneratorPage () {
   // State

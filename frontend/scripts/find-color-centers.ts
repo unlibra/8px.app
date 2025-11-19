@@ -3,8 +3,8 @@
  * to properly define hue ranges
  */
 
-import { hexToLch } from '../src/lib/color-utils'
-import { getColorNames, isGrayScale, tailwindColors } from '../src/lib/tailwind-colors'
+import { hexToLch } from '../src/lib/color/color-utils'
+import { getColorNames, isGrayScale, tailwindColors } from '../src/lib/color/tailwind-colors'
 
 console.log('Tailwind Color Centers (Shade 500)\\n')
 console.log('Color    | HEX     | Hue (°)')

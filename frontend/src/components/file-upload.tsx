@@ -3,8 +3,8 @@
 import { ArrowUpTrayIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useState } from 'react'
 
-import { CircleSpinner } from '@/components/spinner'
-import { useToast } from '@/components/toast'
+import { CircleSpinner } from '@/components/ui/spinner'
+import { useToast } from '@/components/ui/toast'
 
 export interface FileUploadProps {
   accept: string // e.g., "image/*", ".pdf", ".png,.jpg"

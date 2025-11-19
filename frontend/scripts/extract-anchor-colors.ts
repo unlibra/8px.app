@@ -3,9 +3,9 @@
  * Anchor colors: red, yellow, green, cyan, blue, purple
  */
 
-import { hexToLch } from '../src/lib/color-utils'
-import type { TailwindColorName, TailwindShade } from '../src/lib/tailwind-colors'
-import { getShades, tailwindColors } from '../src/lib/tailwind-colors'
+import { hexToLch } from '../src/lib/color/color-utils'
+import type { TailwindColorName, TailwindShade } from '../src/lib/color/tailwind-colors'
+import { getShades, tailwindColors } from '../src/lib/color/tailwind-colors'
 import {
   analyzeTailwindColors,
 } from './tailwind-analyzer'

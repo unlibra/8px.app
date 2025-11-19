@@ -6,19 +6,19 @@ import { LockClosedIcon, PhotoIcon, PlusIcon } from '@heroicons/react/24/outline
 import type { ChangeEvent } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { Breadcrumb } from '@/components/breadcrumb'
-import { FullPageDropZone } from '@/components/full-page-drop-zone'
-import { useToast } from '@/components/toast'
-import type { FaviconSize, OutputSetId } from '@/lib/favicon-generator'
+import { Breadcrumb } from '@/components/ui/breadcrumb'
+import { FullPageDropZone } from '@/components/ui/full-page-drop-zone'
+import { useToast } from '@/components/ui/toast'
+import { validateImageFile } from '@/lib/file/file-validation'
+import { createZip } from '@/lib/file/zip-utils'
+import type { FaviconSize, OutputSetId } from '@/lib/image/favicon-generator'
 import {
   DEFAULT_OUTPUT_SETS,
   DEFAULT_SIZES,
   generateOutputSet,
   OUTPUT_SETS
-} from '@/lib/favicon-generator'
-import { validateImageFile } from '@/lib/file-validation'
-import { downloadBlob, loadImageFromFile, processImage } from '@/lib/image-processing'
-import { createZip } from '@/lib/zip-utils'
+} from '@/lib/image/favicon-generator'
+import { downloadBlob, loadImageFromFile, processImage } from '@/lib/image/image-processing'
 
 import { FaviconOptionsPanel } from './favicon-options-panel'
 

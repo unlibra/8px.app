@@ -1,9 +1,10 @@
 import { Switch } from '@headlessui/react'
 
-import { Slider } from '@/components/slider'
+import { Slider } from '@/components/ui/slider'
+import type { PresetId, SvgoOptions } from '@/lib/image/svgo-optimizer'
+import { PRESETS } from '@/lib/image/svgo-optimizer'
 
-import type { PresetId, SvgoOptions } from './svgo-options'
-import { PLUGIN_DESCRIPTIONS, PLUGIN_GROUPS, PRESETS } from './svgo-options'
+import { PLUGIN_DESCRIPTIONS, PLUGIN_GROUPS } from './svgo-options'
 
 type SvgOptionsPanelProps = {
   options: SvgoOptions

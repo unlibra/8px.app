@@ -6,15 +6,14 @@ import { LockClosedIcon, PhotoIcon, PlusIcon } from '@heroicons/react/24/outline
 import type { ChangeEvent } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { Breadcrumb } from '@/components/breadcrumb'
 import { CheckerboardPreview } from '@/components/checkerboard-preview'
-import { FullPageDropZone } from '@/components/full-page-drop-zone'
-import { useToast } from '@/components/toast'
-import { optimizeSvg } from '@/lib/svgo-optimizer'
+import { Breadcrumb } from '@/components/ui/breadcrumb'
+import { FullPageDropZone } from '@/components/ui/full-page-drop-zone'
+import { useToast } from '@/components/ui/toast'
+import type { PresetId, SvgoOptions } from '@/lib/image/svgo-optimizer'
+import { DEFAULT_SVGO_OPTIONS, optimizeSvg, PRESETS } from '@/lib/image/svgo-optimizer'
 
 import { SvgOptionsPanel } from './svg-options-panel'
-import type { PresetId, SvgoOptions } from './svgo-options'
-import { DEFAULT_SVGO_OPTIONS, PRESETS } from './svgo-options'
 
 export default function SvgOptimizerPage () {
   const toast = useToast()
