@@ -1,10 +1,11 @@
 /**
  * Tailwind Color Analyzer
  * Analyzes Tailwind colors to extract lightness, chroma, and hue shift curves
+ * Using OKLCh color space for better perceptual uniformity
  */
 
-import type { LCh } from '../src/lib/color/color-utils'
-import { hexToLch } from '../src/lib/color/color-utils'
+import type { OKLCh } from '../src/lib/color/color-utils'
+import { hexToOklch } from '../src/lib/color/color-utils'
 import type { TailwindColorName, TailwindShade } from '../src/lib/color/tailwind-colors'
 import {
   getColorNames,
@@ -20,7 +21,7 @@ export interface ColorDataPoint {
   name: TailwindColorName
   shade: TailwindShade
   hex: string
-  lch: LCh
+  oklch: OKLCh
 }
 
 /**
@@ -55,7 +56,7 @@ export interface ColorAnalysis {
 }
 
 /**
- * Convert all Tailwind colors to LCh
+ * Convert all Tailwind colors to OKLCh
  */
 export function analyzeTailwindColors (): ColorDataPoint[] {
   const dataPoints: ColorDataPoint[] = []
@@ -65,14 +66,14 @@ export function analyzeTailwindColors (): ColorDataPoint[] {
   for (const name of colorNames) {
     for (const shade of shades) {
       const hex = tailwindColors[name][shade]
-      const lch = hexToLch(hex)
+      const oklch = hexToOklch(hex)
 
-      if (lch) {
+      if (oklch) {
         dataPoints.push({
           name,
           shade,
           hex,
-          lch
+          oklch
         })
       }
     }
@@ -93,14 +94,14 @@ export function calculateShadeStatistics (dataPoints: ColorDataPoint[]): Record<
     const chromaData = shadeData.filter(dp => !isGrayScale(dp.name))
 
     // Lightness values
-    const lValues = shadeData.map(dp => dp.lch.l).sort((a, b) => a - b)
+    const lValues = shadeData.map(dp => dp.oklch.l).sort((a, b) => a - b)
     const avgL = lValues.reduce((sum, v) => sum + v, 0) / lValues.length
     const medianL = lValues[Math.floor(lValues.length / 2)]
     const minL = Math.min(...lValues)
     const maxL = Math.max(...lValues)
 
     // Chroma values (excluding grays)
-    const cValues = chromaData.map(dp => dp.lch.c).sort((a, b) => a - b)
+    const cValues = chromaData.map(dp => dp.oklch.c).sort((a, b) => a - b)
     const avgC = cValues.length > 0 ? cValues.reduce((sum, v) => sum + v, 0) / cValues.length : 0
     const medianC = cValues.length > 0 ? cValues[Math.floor(cValues.length / 2)] : 0
     const minC = cValues.length > 0 ? Math.min(...cValues) : 0
@@ -115,7 +116,7 @@ export function calculateShadeStatistics (dataPoints: ColorDataPoint[]): Record<
       const currentShade = dataPoints.find(dp => dp.name === name && dp.shade === shade)
 
       if (shade500 && currentShade) {
-        let shift = currentShade.lch.h - shade500.lch.h
+        let shift = currentShade.oklch.h - shade500.oklch.h
         // Handle hue wraparound
         if (shift > 180) shift -= 360
         if (shift < -180) shift += 360
@@ -159,19 +160,19 @@ export function analyzeColor (name: TailwindColorName, dataPoints: ColorDataPoin
     throw new Error(`No shade 500 found for ${name}`)
   }
 
-  const baseHue = shade500.lch.h
-  const maxChroma = Math.max(...colorData.map(dp => dp.lch.c))
+  const baseHue = shade500.oklch.h
+  const maxChroma = Math.max(...colorData.map(dp => dp.oklch.c))
 
   const hueShifts: Partial<Record<TailwindShade, number>> = {}
   const chromaRatios: Partial<Record<TailwindShade, number>> = {}
 
   for (const dp of colorData) {
-    let shift = dp.lch.h - baseHue
+    let shift = dp.oklch.h - baseHue
     if (shift > 180) shift -= 360
     if (shift < -180) shift += 360
     hueShifts[dp.shade] = shift
 
-    chromaRatios[dp.shade] = maxChroma > 0 ? dp.lch.c / maxChroma : 0
+    chromaRatios[dp.shade] = maxChroma > 0 ? dp.oklch.c / maxChroma : 0
   }
 
   return {

@@ -1,14 +1,12 @@
 /**
  * Extract curves for 6 anchor colors for interpolation-based palette generation
  * Anchor colors: red, yellow, green, cyan, blue, purple
+ * Using OKLCh color space for better perceptual uniformity
  */
 
-import { hexToLch } from '../src/lib/color/color-utils'
+import { hexToOklch } from '../src/lib/color/color-utils'
 import type { TailwindColorName, TailwindShade } from '../src/lib/color/tailwind-colors'
 import { getShades, tailwindColors } from '../src/lib/color/tailwind-colors'
-import {
-  analyzeTailwindColors,
-} from './tailwind-analyzer'
 
 // 6 anchor colors for interpolation
 const ANCHOR_COLORS: TailwindColorName[] = ['red', 'yellow', 'green', 'cyan', 'blue', 'purple']
@@ -22,18 +20,15 @@ interface AnchorCurve {
 }
 
 function extractAnchorCurves (): AnchorCurve[] {
-  const dataPoints = analyzeTailwindColors()
   const results: AnchorCurve[] = []
 
   for (const colorName of ANCHOR_COLORS) {
-    const colorPoints = dataPoints.filter(dp => dp.name === colorName)
-
     // Get center hue (shade 500)
     const hex500 = tailwindColors[colorName][500]
-    const lch500 = hexToLch(hex500)
-    if (!lch500) continue
+    const oklch500 = hexToOklch(hex500)
+    if (!oklch500) continue
 
-    const centerHue = lch500.h
+    const centerHue = oklch500.h
 
     // Extract curves
     const lightness: Partial<Record<TailwindShade, number>> = {}
@@ -42,15 +37,16 @@ function extractAnchorCurves (): AnchorCurve[] {
 
     const shades = getShades()
     for (const shade of shades) {
-      const point = colorPoints.find(p => p.shade === shade)
-      if (!point) continue
+      const hex = tailwindColors[colorName][shade]
+      const oklch = hexToOklch(hex)
+      if (!oklch) continue
 
-      lightness[shade] = point.lch.l
-      chroma[shade] = point.lch.c
+      lightness[shade] = oklch.l
+      chroma[shade] = oklch.c
 
       // Calculate hue shift from shade 500
       if (shade !== 500) {
-        let shift = point.lch.h - centerHue
+        let shift = oklch.h - centerHue
         // Handle hue wraparound
         if (shift > 180) shift -= 360
         if (shift < -180) shift += 360
