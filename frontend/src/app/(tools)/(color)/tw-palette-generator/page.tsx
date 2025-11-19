@@ -8,6 +8,7 @@ import { HueSlider } from '@/components/ui/hue-slider'
 import { CircleSpinner } from '@/components/ui/spinner'
 import { useToast } from '@/components/ui/toast'
 import { getToolById } from '@/config/tools'
+import { useColorHistory } from '@/contexts/color-history-context'
 import { hexToCmyk, hexToHsl, hexToOklch, hexToRgb, normalizeHue, oklchToHex } from '@/lib/color/color-utils'
 import type { ColorPalette } from '@/lib/color/palette-generator'
 import { adjustPaletteHue, generatePalette, getShadeLabels } from '@/lib/color/palette-generator'
@@ -17,6 +18,7 @@ import { getColorNames, getShades, isGrayScale, tailwindColors } from '@/lib/col
 export default function TailwindPaletteGeneratorPage () {
   const tool = getToolById('tw-palette-generator')
   const toast = useToast()
+  const { addColor } = useColorHistory()
 
   // State
   const [inputColor, setInputColor] = useState('#3b82f6') // Default: Tailwind blue-500
@@ -77,12 +79,13 @@ export default function TailwindPaletteGeneratorPage () {
   const handleCopyColor = useCallback(async (hex: string) => {
     try {
       await navigator.clipboard.writeText(hex.toUpperCase())
+      addColor(hex)
       toast.success('クリップボードにコピーしました')
     } catch (err) {
       toast.error('コピーに失敗しました')
       console.error('Failed to copy:', err)
     }
-  }, [toast])
+  }, [toast, addColor])
 
   // Handle copy original color (with hue adjustment)
   const handleCopyOriginalColor = useCallback(() => {
@@ -135,20 +138,22 @@ export default function TailwindPaletteGeneratorPage () {
             <div className='space-y-6'>
               {/* HEX Input */}
               <div className='rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-atom-one-dark-light'>
-                <h2 className='mb-4 text-lg font-semibold'>カラー入力</h2>
+                <h6 className='mb-4 text-sm font-semibold'>カラー入力</h6>
                 <div className='flex gap-3'>
                   <input
                     type='color'
                     value={normalizedInputColor}
                     onChange={handleInputChange}
-                    className='h-12 w-20 cursor-pointer rounded border border-gray-300 focus:outline-none dark:border-gray-600'
+                    className='h-10 w-20 cursor-pointer bg-transparent outline-none focus-visible:ring-2 focus-visible:ring-sky-500'
+                    aria-label='色を選択'
                   />
                   <input
                     type='text'
                     value={inputColor}
                     onChange={handleInputChange}
-                    placeholder='#3b82f6 or 3b82f6'
-                    className='flex-1 rounded-lg border border-gray-300 bg-white px-4 py-2 font-mono text-sm focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200'
+                    placeholder='#3b82f6'
+                    className='flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm outline-none transition-colors focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-sky-500 dark:border-gray-600 dark:bg-atom-one-dark-light'
+                    aria-label='カラーコード'
                   />
                 </div>
               </div>
@@ -167,7 +172,7 @@ export default function TailwindPaletteGeneratorPage () {
 
               {/* Tailwind Color Picker */}
               <div className='rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-atom-one-dark-light'>
-                <h2 className='mb-4 text-lg font-semibold'>カラーパレットから選択</h2>
+                <h6 className='mb-4 text-sm font-semibold'>カラーパレットから選択</h6>
                 {/* Header Row */}
                 <div className='mb-3 flex items-center gap-1'>
                   <div className='w-20 shrink-0 text-xs font-medium text-gray-600 dark:text-gray-400'>
@@ -198,7 +203,7 @@ export default function TailwindPaletteGeneratorPage () {
                             <button
                               key={shade}
                               onClick={() => handleTailwindColorSelect(colorName, shade)}
-                              className='group relative size-9 shrink-0 rounded transition-transform hover:scale-110 focus:outline-none'
+                              className='group relative size-9 shrink-0 rounded transition-transform hover:scale-110 focus:outline-none active:scale-95'
                               style={{ backgroundColor: hex }}
                               title='クリックで選択'
                             >
@@ -226,7 +231,7 @@ export default function TailwindPaletteGeneratorPage () {
                             <button
                               key={shade}
                               onClick={() => handleTailwindColorSelect(colorName, shade)}
-                              className='group relative size-9 shrink-0 rounded transition-transform hover:scale-110 focus:outline-none'
+                              className='group relative size-9 shrink-0 rounded transition-transform hover:scale-110 focus:outline-none active:scale-95'
                               style={{ backgroundColor: hex }}
                               title='クリックで選択'
                             >
@@ -245,7 +250,7 @@ export default function TailwindPaletteGeneratorPage () {
           {/* Right Column - Output (Always visible) */}
           <div className='lg:w-1/2'>
             <div className='rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-atom-one-dark-light'>
-              <h2 className='mb-4 text-lg font-semibold'>生成されたパレット</h2>
+              <h6 className='mb-4 text-sm font-semibold'>生成されたパレット</h6>
 
               {palette
                 ? (
@@ -258,7 +263,7 @@ export default function TailwindPaletteGeneratorPage () {
                       <div className='flex items-center gap-3'>
                         <button
                           onClick={handleCopyOriginalColor}
-                          className='h-12 w-12 flex-shrink-0 cursor-pointer rounded shadow-sm transition-transform hover:scale-110'
+                          className='h-12 w-12 flex-shrink-0 cursor-pointer rounded shadow-sm transition-transform hover:scale-110 active:scale-95'
                           style={{ backgroundColor: adjustedOriginalColor }}
                           title='クリックでコピー'
                         />
@@ -313,7 +318,7 @@ export default function TailwindPaletteGeneratorPage () {
                             {/* Color Preview */}
                             <button
                               onClick={() => handleCopyColor(hex)}
-                              className='h-10 w-10 flex-shrink-0 cursor-pointer rounded shadow-sm transition-transform hover:scale-110'
+                              className='h-10 w-10 flex-shrink-0 cursor-pointer rounded shadow-sm transition-transform hover:scale-110 active:scale-95'
                               style={{ backgroundColor: hex }}
                               title='クリックでコピー'
                             />

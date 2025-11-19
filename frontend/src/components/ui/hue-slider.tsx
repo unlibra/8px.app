@@ -128,7 +128,7 @@ export function HueSlider ({
       `}
       </style>
       {label && (
-        <label className='mb-2 text-sm font-medium'>
+        <label className='mb-4 text-sm font-semibold'>
           {label}
         </label>
       )}
