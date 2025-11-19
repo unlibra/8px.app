@@ -40,14 +40,14 @@ export const tools: Tool[] = [
     icon: '/icons/tools/tw-palette-generator.svg',
     category: 'color'
   },
-  {
-    id: 'image-to-palette',
-    name: '画像カラーパレット',
-    description: '画像から配色を抽出します。',
-    shortDescription: '画像から配色を抽出',
-    icon: '/icons/tools/image-to-palette.svg',
-    category: 'color'
-  },
+  // {
+  //   id: 'image-to-palette',
+  //   name: '画像カラーパレット',
+  //   description: '画像から配色を抽出します。',
+  //   shortDescription: '画像から配色を抽出',
+  //   icon: '/icons/tools/image-to-palette.svg',
+  //   category: 'color'
+  // },
   {
     id: 'favicon-generator',
     name: 'Faviconジェネレーター',
@@ -64,22 +64,22 @@ export const tools: Tool[] = [
     icon: '/icons/tools/svg-optimizer.svg',
     category: 'image'
   },
-  {
-    id: 'image-corner-rounder',
-    name: '画像角丸ツール',
-    description: '画像の角をカスタマイズ可能な半径で丸くします。',
-    shortDescription: '画像の角を丸くする',
-    icon: '/icons/tools/image-corner-rounder.svg',
-    category: 'image'
-  },
-  {
-    id: 'image-converter',
-    name: '画像変換ツール',
-    description: '画像を異なるフォーマットに変換します。JPEG、PNG、WEBPなどをサポート。',
-    shortDescription: '画像フォーマットを変換',
-    icon: '/icons/tools/image-converter.svg',
-    category: 'image'
-  },
+  // {
+  //   id: 'image-corner-rounder',
+  //   name: '画像角丸ツール',
+  //   description: '画像の角をカスタマイズ可能な半径で丸くします。',
+  //   shortDescription: '画像の角を丸くする',
+  //   icon: '/icons/tools/image-corner-rounder.svg',
+  //   category: 'image'
+  // },
+  // {
+  //   id: 'image-converter',
+  //   name: '画像変換ツール',
+  //   description: '画像を異なるフォーマットに変換します。JPEG、PNG、WEBPなどをサポート。',
+  //   shortDescription: '画像フォーマットを変換',
+  //   icon: '/icons/tools/image-converter.svg',
+  //   category: 'image'
+  // },
 ]
 
 // カテゴリ一覧を自動生成
