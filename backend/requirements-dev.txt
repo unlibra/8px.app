@@ -1,0 +1,17 @@
+# Development dependencies
+-r requirements.txt
+
+# Type checking
+mypy==1.18.2
+mypy_extensions==1.1.0
+
+# Linting and formatting
+ruff==0.14.4
+pathspec==0.12.1
+
+# Development server
+uvicorn==0.38.0
+httptools==0.7.1
+uvloop==0.22.1
+watchfiles==1.1.1
+websockets==15.0.1
