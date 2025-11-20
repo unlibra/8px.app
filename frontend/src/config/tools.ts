@@ -40,14 +40,14 @@ export const tools: Tool[] = [
     icon: '/icons/tools/tw-palette-generator.svg',
     category: 'color'
   },
-  // {
-  //   id: 'image-to-palette',
-  //   name: '画像カラーパレット',
-  //   description: '画像から配色を抽出します。',
-  //   shortDescription: '画像から配色を抽出',
-  //   icon: '/icons/tools/image-to-palette.svg',
-  //   category: 'color'
-  // },
+  {
+    id: 'image-palette',
+    name: 'イメージパレット+',
+    description: '好きな画像からカラーパレットを作ろう。画像解析して主要な色を抽出します。',
+    shortDescription: '画像からカラーパレットを生成',
+    icon: '/icons/tools/image-palette.svg',
+    category: 'color'
+  },
   {
     id: 'favicon-generator',
     name: 'Faviconジェネレーター',
