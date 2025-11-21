@@ -24,7 +24,7 @@ function CorkBoardBackground ({
   className?: string
 }) {
   return (
-    <div className={`relative bg-stone-100 dark:bg-atom-one-dark ${className}`}>
+    <div className={`relative bg-stone-50 dark:bg-atom-one-dark ${className}`}>
       {/* Noise texture overlay using SVG filter */}
       <div
         className='pointer-events-none absolute inset-0 opacity-5'
