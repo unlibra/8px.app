@@ -69,7 +69,7 @@ function PolaroidFrame ({
       <div className='relative bg-white p-4 shadow-xl dark:bg-gray-100'>
 
         {/* Paper texture */}
-        <div className='pointer-events-none absolute inset-0 bg-gray-50 opacity-[0.02]' />
+        <div className='pointer-events-none absolute inset-0 bg-gray-50 opacity-5' />
 
         <div className='relative flex justify-center overflow-hidden'>
           {/* Photo */}
@@ -306,10 +306,10 @@ export default function ImagePalettePage () {
       accept='image/*'
     >
       <CorkBoardBackground className='left-1/2 -mb-12 -mt-6 w-screen -translate-x-1/2 px-4 py-12 sm:px-6 lg:px-8'>
-        <div className='mx-auto flex min-h-screen max-w-screen-md flex-col px-4'>
+        <div className='mx-auto flex min-h-[calc(100vh-64px)] max-w-screen-md flex-col px-4'>
           {/* Header */}
           {!imagePreview && (
-            <div className='py-8 text-center'>
+            <div className='py-12 text-center'>
               <h1 className='text-3xl font-bold'>{tool?.name ?? 'イメージパレット+'}</h1>
               <p className='mt-2 text-gray-500 dark:text-gray-400'>
                 {tool?.description ?? ''}
@@ -322,14 +322,14 @@ export default function ImagePalettePage () {
             ? (
               // Upload State
               <div className='flex items-center justify-center'>
-                <label className='group flex w-full max-w-lg cursor-pointer flex-col items-center justify-center rounded-3xl border-[3px] border-dashed border-gray-300 bg-gradient-to-br from-gray-50 to-gray-100 p-16 transition-all hover:border-sky-400 hover:from-sky-50 hover:to-indigo-50 dark:border-gray-600 dark:from-atom-one-dark dark:to-atom-one-dark-light dark:hover:border-sky-500 dark:hover:from-atom-one-dark-light dark:hover:to-atom-one-dark-lighter'>
-                  <div className='mb-6 rounded-full p-6 transition-transform group-hover:scale-110'>
-                    <PhotoIcon className='size-12 text-gray-400 transition-colors group-hover:text-sky-500' />
+                <label className='group flex w-full max-w-lg cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-white p-16 transition-colors hover:border-gray-400 dark:border-gray-600 dark:bg-atom-one-dark dark:hover:border-gray-500'>
+                  <div className='mb-6 rounded-full bg-gray-100 p-6 transition-colors group-hover:bg-gray-200 dark:bg-atom-one-dark-light dark:group-hover:bg-atom-one-dark-lighter'>
+                    <PhotoIcon className='size-12 text-gray-600 dark:text-gray-400' />
                   </div>
-                  <span className='mb-2 text-lg font-semibold text-gray-700 dark:text-gray-300'>
+                  <span className='mb-2 text-lg font-semibold'>
                     画像を選択
                   </span>
-                  <span className='text-sm text-gray-500 dark:text-gray-400'>
+                  <span className='text-sm text-gray-600 dark:text-gray-400'>
                     またはドラッグ＆ドロップ
                   </span>
                   <input
