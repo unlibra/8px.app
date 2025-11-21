@@ -8,7 +8,8 @@ type CategoryDefinition = {
 // カテゴリ定義
 const categoryDefinitions = [
   { id: 'color', name: 'Color', iconBgColor: 'bg-gradient-to-br from-orange-200 to-orange-300 dark:from-orange-700 dark:to-orange-600' },
-  { id: 'image', name: 'Image', iconBgColor: 'bg-gradient-to-br from-sky-200 to-sky-300 dark:from-sky-700 dark:to-sky-600' }
+  { id: 'image', name: 'Image', iconBgColor: 'bg-gradient-to-br from-sky-200 to-sky-300 dark:from-sky-700 dark:to-sky-600' },
+  { id: 'text', name: 'Text', iconBgColor: 'bg-gradient-to-br from-indigo-200 to-indigo-300 dark:from-indigo-700 dark:to-indigo-600' }
 ] as const satisfies readonly CategoryDefinition[]
 
 // カテゴリIDの型を自動抽出
@@ -65,6 +66,14 @@ export const tools: Tool[] = [
     shortDescription: 'SVGファイルを最適化・圧縮',
     icon: '/icons/tools/svg-optimizer.svg',
     category: 'image'
+  },
+  {
+    id: 'password-generator',
+    name: 'パスワード生成',
+    description: '安全で強力なパスワードをワンクリックで生成。長さや使用文字をカスタマイズして、あなたに最適なパスワードを作成します。',
+    shortDescription: '安全なパスワードを生成',
+    icon: '/icons/tools/password-generator.svg',
+    category: 'text'
   }
 ]
 
