@@ -217,7 +217,7 @@ export default function ImagePalettePage () {
           await navigator.share({
             files: [file],
             title: tool?.name ?? '推し色生成 イロマイド',
-            text: 'あなたの推しを、イロマイドに。',
+            text: 'あなたの推しは、なに色？',
             url: `${siteConfig.url ?? 'https://8px.app'}/${tool?.id ?? 'iromide'}`
           })
         } catch (err) {
