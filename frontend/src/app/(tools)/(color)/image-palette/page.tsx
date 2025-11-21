@@ -305,7 +305,7 @@ export default function ImagePalettePage () {
       onFileDrop={handleFileSelect}
       accept='image/*'
     >
-      <CorkBoardBackground className='left-1/2 -mb-12 -mt-6 w-screen -translate-x-1/2 px-4 py-12 sm:px-6 lg:px-8'>
+      <CorkBoardBackground className='left-1/2 -mb-12 -mt-6 w-screen -translate-x-1/2 border-b border-gray-200 px-4 py-12 dark:border-gray-700 sm:px-6 lg:px-8'>
         <div className='mx-auto flex min-h-[calc(100vh-64px)] max-w-screen-md flex-col px-4'>
           {/* Header */}
           {!imagePreview && (
