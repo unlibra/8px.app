@@ -34,7 +34,7 @@ export function ToolCard ({ tool, iconBgColor }: ToolCardProps) {
             </span>
           )}
         </h3>
-        <p className='line-clamp-3 text-sm text-gray-600 dark:text-gray-400'>
+        <p className='text-sm text-gray-600 dark:text-gray-400'>
           {tool.description}
         </p>
       </div>
