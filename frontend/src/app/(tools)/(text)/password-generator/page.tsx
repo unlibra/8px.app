@@ -1,6 +1,6 @@
 'use client'
 
-import { Switch } from '@headlessui/react'
+import { Field, Label, Switch } from '@headlessui/react'
 import { ArrowPathIcon, ClipboardDocumentCheckIcon, ClipboardDocumentIcon } from '@heroicons/react/24/outline'
 import { useCallback, useEffect, useState } from 'react'
 
@@ -248,10 +248,10 @@ export default function PasswordGeneratorPage () {
             <label className='mb-2 block text-sm font-semibold'>
               オプション
             </label>
-            <Switch.Group as='div' className='flex items-center justify-between gap-4'>
-              <Switch.Label className='flex-1 cursor-pointer text-sm text-gray-700 dark:text-gray-300'>
+            <Field as='div' className='flex items-center justify-between gap-4'>
+              <Label className='flex-1 cursor-pointer text-sm text-gray-700 dark:text-gray-300'>
                 紛らわしい文字を避ける
-              </Switch.Label>
+              </Label>
               <Switch
                 checked={options.avoidAmbiguous}
                 onChange={(v) => updateOption('avoidAmbiguous', v)}
@@ -266,7 +266,7 @@ export default function PasswordGeneratorPage () {
                 } pointer-events-none inline-block size-4 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
                 />
               </Switch>
-            </Switch.Group>
+            </Field>
             <p className='mt-2 text-xs text-gray-600 dark:text-gray-400'>
               0とO、1とlとIなど見分けにくい文字を除外します
             </p>
