@@ -44,7 +44,7 @@ export const tools: Tool[] = [
     id: 'iromide',
     name: '推し色生成 イロマイド',
     description: '好きな写真からカラーパレットを生成。人間の知覚に近い画像解析であなたの「推し色」を取り出せます。推し色をみんなにシェアしましょう！',
-    shortDescription: '画像からカラーパレットを生成',
+    shortDescription: '写真から推し色チェキを作ろう！',
     icon: '/icons/tools/iromide.svg',
     category: 'toys',
   },

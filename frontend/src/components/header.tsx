@@ -41,7 +41,7 @@ function CategoryPopover ({ category }: { category: typeof categories[number] })
                 href={`/${tool.id}`}
                 className='flex w-full items-center gap-3 rounded-md px-3 py-2 outline-none transition-colors hover:bg-gray-100 focus-visible:bg-gray-100 dark:hover:bg-atom-one-dark-lighter focus-visible:dark:bg-atom-one-dark-lighter'
               >
-                <div className='flex flex-col items-start'>
+                <div className='space-y-0.5'>
                   <span className='text-sm font-medium'>{tool.name}</span>
                   <span className='line-clamp-2 break-keep text-xs text-gray-500'>
                     {tool.shortDescription || tool.description}
