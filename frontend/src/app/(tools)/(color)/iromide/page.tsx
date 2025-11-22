@@ -130,14 +130,25 @@ export default function ImagePalettePage () {
       setChekiPadding(padding)
 
       // Calculate thumbnail padding for display
-      const thumbWidth = Math.min(chekiSize.width, document.body.clientWidth * 0.8)
-      const thumbHeight = Math.round(thumbWidth * (chekiSize.height / chekiSize.width))
-      const maxThumbHeight = window.innerHeight * 0.5
-      const thumbPadding = calculateChekiPadding(
-        thumbHeight > maxThumbHeight ? Math.round(400 * (chekiSize.width / chekiSize.height)) : thumbWidth,
-        thumbHeight > maxThumbHeight ? maxThumbHeight : thumbHeight,
-        chekiSize.aspectRatio
-      )
+      const maxDisplayWidth = document.body.clientWidth * 0.8
+      const maxDisplayHeight = window.innerHeight * 0.5
+
+      let thumbWidth = chekiSize.width
+      let thumbHeight = chekiSize.height
+
+      // Scale down to fit width constraint
+      if (thumbWidth > maxDisplayWidth) {
+        thumbWidth = maxDisplayWidth
+        thumbHeight = Math.round(thumbWidth * (chekiSize.height / chekiSize.width))
+      }
+
+      // Scale down to fit height constraint (after width adjustment)
+      if (thumbHeight > maxDisplayHeight) {
+        thumbHeight = maxDisplayHeight
+        thumbWidth = Math.round(thumbHeight * (chekiSize.width / chekiSize.height))
+      }
+
+      const thumbPadding = calculateChekiPadding(thumbWidth, thumbHeight, chekiSize.aspectRatio)
       setThumbnailPadding(thumbPadding)
 
       // Random rotation for result (-3 to 3)
@@ -195,7 +206,7 @@ export default function ImagePalettePage () {
       toast.error('画像の生成に失敗しました')
       console.error('Image capture failed:', err)
     }
-  }, [toast])
+  }, [toast, message, tool])
 
   // Reset
   const handleReset = useCallback(() => {
@@ -239,7 +250,7 @@ export default function ImagePalettePage () {
                     {sampleImages.map((sample, index) => (
                       <div key={index} className='relative'>
                         <MaskingTape
-                          className='absolute -top-4 left-1/2 z-10 -translate-x-1/2'
+                          className='absolute left-1/2 top-0 z-10 -translate-x-1/2 -translate-y-1/2'
                         />
                         <PolaroidFrame
                           image={{
@@ -248,16 +259,18 @@ export default function ImagePalettePage () {
                           }}
                           rotation={index === 0 ? -3 : index === 1 ? 2 : -1}
                         >
-                          <div className='flex gap-2'>
-                            {sample.colors.slice(0, 6).map((color, i) => (
-                              <div
-                                key={i}
-                                className='size-5 rounded-full shadow-sm sm:size-12'
-                                style={{
-                                  backgroundColor: color
-                                }}
-                              />
-                            ))}
+                          <div className='relative flex size-full flex-col items-center gap-2'>
+                            <div className='absolute bottom-1/2 left-1/2 flex -translate-x-1/2 gap-2 '>
+                              {sample.colors.map((color, index) => (
+                                <div
+                                  key={index}
+                                  className='size-5 rounded-full shadow-sm sm:size-12'
+                                  style={{
+                                    backgroundColor: color
+                                  }}
+                                />
+                              ))}
+                            </div>
                           </div>
                         </PolaroidFrame>
                       </div>
@@ -301,7 +314,7 @@ export default function ImagePalettePage () {
                       <div className='relative flex justify-center'>
                         {/* Decorative Masking Tape */}
                         <MaskingTape
-                          className='absolute -top-4 left-1/2 z-10 -translate-x-1/2'
+                          className='absolute left-1/2 top-0 z-10 -translate-x-1/2 -translate-y-1/2'
                           width={chekiPadding ? Math.round(chekiPadding.top * 2) : undefined}
                           height={chekiPadding ? Math.round(chekiPadding.top * 0.6) : undefined}
                         />
@@ -318,8 +331,8 @@ export default function ImagePalettePage () {
                             width: imageDimensions ? `${imageDimensions.width}px` : 'auto'
                           }}
                         >
-                          <div className='flex flex-col items-center gap-2'>
-                            <div className='flex gap-2'>
+                          <div className='relative flex size-full flex-col items-center gap-2'>
+                            <div className='absolute bottom-1/2 left-1/2 flex -translate-x-1/2 gap-2 '>
                               {extractedColors.map((color, index) => (
                                 <div
                                   key={index}
@@ -333,14 +346,15 @@ export default function ImagePalettePage () {
                               ))}
                             </div>
                             {message && (
-                              <p
-                                className='text-center font-medium antialiased'
-                                style={{
-                                  fontSize: chekiPadding ? `${Math.round(chekiPadding.bottom * 0.15)}px` : '14px'
-                                }}
-                              >
-                                {message}
-                              </p>
+                              <div className='absolute left-1/2 top-1/2 w-full -translate-x-1/2 p-2'>
+                                <p
+                                  className='line-clamp-1 text-center font-medium antialiased' style={{
+                                    fontSize: chekiPadding ? `${Math.round(chekiPadding.bottom * 0.15)}px` : '14px'
+                                  }}
+                                >
+                                  {message}
+                                </p>
+                              </div>
                             )}
                           </div>
                         </PolaroidFrame>
@@ -351,7 +365,7 @@ export default function ImagePalettePage () {
                   {/* Visible Display Polaroid */}
                   <div className='relative mb-8'>
                     <MaskingTape
-                      className='absolute -top-4 left-1/2 z-10 -translate-x-1/2'
+                      className='absolute left-1/2 top-0 z-10 -translate-x-1/2 -translate-y-1/2'
                       width={thumbnailPadding ? Math.round(thumbnailPadding.top * 2) : undefined}
                       height={thumbnailPadding ? Math.round(thumbnailPadding.top * 0.6) : undefined}
                     />
@@ -364,8 +378,8 @@ export default function ImagePalettePage () {
                       rotation={resultRotation}
                       chekiPadding={thumbnailPadding ?? undefined}
                     >
-                      <div className='flex flex-col items-center gap-2'>
-                        <div className='flex gap-2'>
+                      <div className='relative flex size-full flex-col items-center gap-2'>
+                        <div className='absolute bottom-1/2 left-1/2 flex -translate-x-1/2 gap-2 '>
                           {extractedColors.map((color, index) => (
                             <div
                               key={index}
@@ -379,9 +393,15 @@ export default function ImagePalettePage () {
                           ))}
                         </div>
                         {message && (
-                          <p className='text-center text-sm font-medium antialiased sm:text-lg'>
-                            {message}
-                          </p>
+                          <div className='absolute left-1/2 top-1/2 w-full -translate-x-1/2 p-2'>
+                            <p
+                              className='line-clamp-1 text-center font-medium antialiased' style={{
+                                fontSize: thumbnailPadding ? `${Math.round(thumbnailPadding.bottom * 0.15)}px` : '14px'
+                              }}
+                            >
+                              {message}
+                            </p>
+                          </div>
                         )}
                       </div>
                     </PolaroidFrame>
@@ -392,8 +412,8 @@ export default function ImagePalettePage () {
                     <input
                       type='text'
                       value={message}
-                      onChange={(e) => setMessage(e.target.value.slice(0, 25))}
-                      placeholder='メッセージを追加（25文字まで）'
+                      onChange={(e) => setMessage(e.target.value)}
+                      placeholder='メッセージを追加'
                       className='w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-center text-sm outline-none transition-colors focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-sky-500 dark:border-gray-600 dark:bg-atom-one-dark-light'
                     />
                   </div>
