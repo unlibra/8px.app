@@ -23,6 +23,10 @@ class Settings(BaseSettings):
     # Logging
     LOG_LEVEL: str = 'INFO'
 
+    # Rate Limiting (Upstash Redis)
+    UPSTASH_REDIS_REST_URL: str | None = None
+    UPSTASH_REDIS_REST_TOKEN: str | None = None
+
     model_config = SettingsConfigDict(
         env_file='.env',
         env_file_encoding='utf-8',
