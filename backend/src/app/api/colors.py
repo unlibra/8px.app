@@ -167,10 +167,10 @@ def kmeans_plusplus_init(
         total_dist = distances.sum()
         if total_dist == 0:
             # All pixels are identical to existing centers, pick randomly
-            next_idx = rng.integers(n_samples)
+            next_idx = int(rng.integers(n_samples))
         else:
             probabilities = distances / total_dist
-            next_idx = rng.choice(n_samples, p=probabilities)
+            next_idx = int(rng.choice(n_samples, p=probabilities))
         centers.append(pixels[next_idx])
 
     return np.array(centers)
@@ -220,13 +220,13 @@ def kmeans(
                 new_centers.append(new_center)
             else:
                 new_centers.append(centers[k])
-        new_centers = np.array(new_centers)
+        new_centers_array: NDArray[np.float64] = np.array(new_centers)
 
         # Check convergence
-        if np.allclose(centers, new_centers):
+        if np.allclose(centers, new_centers_array):
             break
 
-        centers = new_centers
+        centers = new_centers_array
 
     return centers, labels
 
@@ -293,22 +293,22 @@ def mean_shift(
 
         modes.append(point)
 
-    modes = np.array(modes)
+    modes_array: NDArray[np.float64] = np.array(modes)
 
     # Merge nearby modes
     merged_modes: list[NDArray[np.float64]] = []
-    used = np.zeros(len(modes), dtype=bool)
+    used = np.zeros(len(modes_array), dtype=bool)
 
-    for i in range(len(modes)):
+    for i in range(len(modes_array)):
         if used[i]:
             continue
 
         # Find all modes within bandwidth
-        distances = np.sqrt(np.sum((modes - modes[i]) ** 2, axis=1))
+        distances = np.sqrt(np.sum((modes_array - modes_array[i]) ** 2, axis=1))
         nearby = distances < bandwidth
 
         # Average nearby modes
-        merged_mode = modes[nearby].mean(axis=0)
+        merged_mode = modes_array[nearby].mean(axis=0)
         merged_modes.append(merged_mode)
         used[nearby] = True
 
