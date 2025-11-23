@@ -72,12 +72,24 @@ def validate_image_magic_number(data: bytes) -> str | None:
     if len(data) >= 2 and data[:2] == b"BM":
         return None
 
-    # SVG: Starts with < or UTF-8 BOM + <
-    if data[0:1] == b"<":
-        return None
+    # SVG: Starts with <, allowing leading whitespace and UTF-8 BOM
+    offset = 0
 
-    # UTF-8 BOM (EF BB BF) followed by <
-    if len(data) >= 4 and data[:4] == b"\xef\xbb\xbf<":
+    # Skip UTF-8 BOM if present
+    if len(data) >= 3 and data[:3] == b"\xef\xbb\xbf":
+        offset = 3
+
+    # Skip leading whitespace (space, tab, newline, carriage return)
+    while offset < len(data):
+        byte = data[offset]
+        # 0x20 = space, 0x09 = tab, 0x0A = newline, 0x0D = carriage return
+        if byte in (0x20, 0x09, 0x0A, 0x0D):
+            offset += 1
+        else:
+            break
+
+    # Check if we found '<' after skipping whitespace
+    if offset < len(data) and data[offset] == ord("<"):
         return None
 
     # No valid magic number found

@@ -110,12 +110,29 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         """
         Extract client IP address from request.
 
-        Checks X-Forwarded-For header first (Vercel proxy), falls back to client host.
+        When TRUST_PROXY_HEADERS=True (behind trusted proxy):
+        - Use X-Real-IP if available (set by Nginx, Vercel, etc.)
+        - Otherwise use leftmost IP from X-Forwarded-For
+          (trusted proxies like Vercel/Cloudflare sanitize this header)
+
+        When TRUST_PROXY_HEADERS=False (direct connection):
+        - Use direct client connection only
         """
-        forwarded_for = request.headers.get("X-Forwarded-For")
-        if forwarded_for:
-            # X-Forwarded-For can contain multiple IPs, take the first one
-            return forwarded_for.split(",")[0].strip()
+        settings = get_settings()
+
+        if settings.TRUST_PROXY_HEADERS:
+            # X-Real-IP: Standard header set by reverse proxies
+            real_ip = request.headers.get("X-Real-IP")
+            if real_ip:
+                return real_ip.strip()
+
+            # X-Forwarded-For: Leftmost IP is the client
+            # (trusted proxies sanitize/overwrite client-provided values)
+            forwarded_for = request.headers.get("X-Forwarded-For")
+            if forwarded_for:
+                return forwarded_for.split(",")[0].strip()
+
+        # Direct connection (no proxy trusted)
         return request.client.host if request.client else "unknown"
 
     async def _check_rate_limit(
