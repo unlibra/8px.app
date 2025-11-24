@@ -19,8 +19,8 @@ import type { ChekiPadding } from '@/lib/image/cheki-size'
 import { calculateChekiPadding, determineChekiSize } from '@/lib/image/cheki-size'
 import { loadImageFromFile, processImageForCheki } from '@/lib/image/image-processing'
 
-const ACCEPTED_IMAGE_TYPES = 'image/png, image/jpeg, image/webp, image/svg+xml, image/gif, image/avif, image/tiff, image/bmp'
-const ACCEPTED_IMAGE_TYPES_SAFARI = 'image/png, image/jpeg, image/webp, image/svg+xml, image/gif, image/tiff, image/bmp, image/heic, image/heif'
+const ACCEPTED_IMAGE_TYPES = 'image/png, image/jpeg, image/webp, image/gif, image/avif, image/tiff, image/bmp'
+const ACCEPTED_IMAGE_TYPES_SAFARI = 'image/png, image/jpeg, image/webp, image/gif, image/tiff, image/bmp, image/heic, image/heif'
 
 export default function ImagePalettePage () {
   const tool = getToolById('iromide')
