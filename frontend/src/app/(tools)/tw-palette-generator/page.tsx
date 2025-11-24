@@ -9,7 +9,6 @@ import { SaturationSlider } from '@/components/tw-palette-generator/saturation-s
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { useToast } from '@/components/ui/toast'
 import { getToolById } from '@/config/tools'
-import { useColorHistory } from '@/contexts/color-history-context'
 import { hexToOklch } from '@/lib/color/color-utils'
 import type { ColorPalette } from '@/lib/color/palette-generator'
 import {
@@ -24,7 +23,6 @@ import { getColorNames, getShades, isGrayScale, tailwindColors } from '@/lib/col
 export default function TailwindPaletteGeneratorPage () {
   const tool = getToolById('tw-palette-generator')
   const toast = useToast()
-  const { addColor } = useColorHistory()
 
   // Palette history type
   type PaletteHistoryItem = {
@@ -174,13 +172,12 @@ export default function TailwindPaletteGeneratorPage () {
   const handleCopyColor = useCallback(async (hex: string) => {
     try {
       await navigator.clipboard.writeText(hex.toUpperCase())
-      addColor(hex)
       toast.success('カラーコードをコピーしました')
     } catch (err) {
       toast.error('コピーに失敗しました')
       console.error('Failed to copy:', err)
     }
-  }, [toast, addColor])
+  }, [toast])
 
   // Copy as Tailwind Config
   const handleCopyAsTailwind = useCallback(() => {
