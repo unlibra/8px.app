@@ -392,6 +392,7 @@ export default function TailwindPaletteGeneratorPage () {
                     className='size-12 flex-shrink-0 cursor-pointer rounded shadow-sm outline-none transition-transform hover:scale-110 focus-visible:scale-110 active:scale-95'
                     style={{ backgroundColor: baseColor }}
                     title='クリックでコピー'
+                    aria-label={`BASE ${getFormattedColor(baseColor)} をコピー`}
                   />
 
                   {/* Shade Label */}
@@ -418,6 +419,7 @@ export default function TailwindPaletteGeneratorPage () {
                         className='size-12 flex-shrink-0 cursor-pointer rounded shadow-sm outline-none transition-transform hover:scale-110 focus-visible:scale-110 active:scale-95'
                         style={{ backgroundColor: hex }}
                         title='クリックでコピー'
+                        aria-label={`${shade} ${getFormattedColor(hex)} をコピー`}
                       />
 
                       {/* Shade Label */}
@@ -449,10 +451,10 @@ ${getShadeLabels().map(shade => `    ${shade}: '${palette[shade]}',`).join('\n')
                 <button
                   onClick={handleCopyAsTailwind}
                   className='absolute right-2 top-2 rounded-lg p-1 text-gray-300 transition-colors hover:bg-white/10 dark:text-gray-300'
-                  title='コピー'
-                  aria-label='コピー'
+                  title='Tailwind設定をコピー'
+                  aria-label='Tailwind設定をコピー'
                 >
-                  <ClipboardDocumentIcon className='size-5' aria-label='コピー' />
+                  <ClipboardDocumentIcon className='size-5' />
                 </button>
               </div>
             </section>

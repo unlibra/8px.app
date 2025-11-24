@@ -18,11 +18,12 @@ import { validateImageFile } from '@/lib/file/file-validation'
 import type { ChekiPadding } from '@/lib/image/cheki-size'
 import { calculateChekiPadding, determineChekiSize } from '@/lib/image/cheki-size'
 import { loadImageFromFile, processImageForCheki } from '@/lib/image/image-processing'
+import { getHeicSupport } from '@/lib/image/media-support'
 
 const ACCEPTED_IMAGE_TYPES = 'image/png, image/jpeg, image/webp, image/gif, image/avif, image/tiff, image/bmp'
-const ACCEPTED_IMAGE_TYPES_SAFARI = 'image/png, image/jpeg, image/webp, image/gif, image/tiff, image/bmp, image/heic, image/heif'
+const HEIC_TYPES = 'image/heic, image/heif'
 
-export default function ImagePalettePage () {
+export default function IromidePage () {
   const tool = getToolById('iromide')
   const toast = useToast()
   const shareTargetRef = useRef<HTMLDivElement>(null)
@@ -36,12 +37,11 @@ export default function ImagePalettePage () {
   const [resultRotation, setResultRotation] = useState(0)
   const [message, setMessage] = useState('')
   const [isSharing, setIsSharing] = useState(false)
-  const [isSafari, setIsSafari] = useState(false)
+  const [isHeicSupport, setIsHeicSupport] = useState(false)
 
-  // Detect Safari for HEIC/HEIF support
+  // Detect HEIC/HEIF support
   useEffect(() => {
-    const isSafari = typeof window.safari !== 'undefined'
-    setIsSafari(isSafari)
+    setIsHeicSupport(getHeicSupport())
   }, [])
 
   // Fixed color count for simplicity
@@ -124,7 +124,9 @@ export default function ImagePalettePage () {
       const colors = await extractColorsFromImage(file, colorCount)
       setExtractedColors(colors)
     } catch (err) {
-      toast.error('色の抽出に失敗しました')
+      // Display detailed error message from API
+      const errorMessage = err instanceof Error ? err.message : '色の抽出に失敗しました'
+      toast.error(errorMessage)
       console.error('Failed to extract colors:', err)
     } finally {
       setIsProcessing(false)
@@ -220,7 +222,7 @@ export default function ImagePalettePage () {
   return (
     <FullPageDropZone
       onFileDrop={handleFileSelect}
-      accept={isSafari ? ACCEPTED_IMAGE_TYPES_SAFARI : ACCEPTED_IMAGE_TYPES}
+      accept={isHeicSupport ? `${ACCEPTED_IMAGE_TYPES}, ${HEIC_TYPES}` : ACCEPTED_IMAGE_TYPES}
     >
       <CorkBoardBackground className='left-1/2 -mb-12 -mt-6 w-screen -translate-x-1/2 border-b border-gray-200 px-4 py-12 dark:border-gray-700 sm:px-6 sm:py-20 lg:px-8'>
         <div className='mx-auto flex min-h-[calc(100vh-160px)] max-w-screen-md flex-col px-4'>
@@ -270,7 +272,7 @@ export default function ImagePalettePage () {
                   </p>
                   <input
                     type='file'
-                    accept={isSafari ? ACCEPTED_IMAGE_TYPES_SAFARI : ACCEPTED_IMAGE_TYPES}
+                    accept={isHeicSupport ? `${ACCEPTED_IMAGE_TYPES}, ${HEIC_TYPES}` : ACCEPTED_IMAGE_TYPES}
                     onChange={(e) => handleFileSelect(e.target.files?.[0] ?? null)}
                     className='hidden'
                   />
