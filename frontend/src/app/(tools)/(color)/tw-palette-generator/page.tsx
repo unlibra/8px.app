@@ -1,6 +1,6 @@
 'use client'
 
-import { ClipboardDocumentIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { ArrowPathIcon, BookmarkIcon, ClipboardDocumentIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useCallback, useEffect, useState } from 'react'
 
 import { HueSlider } from '@/components/tw-palette-generator/hue-slider'
@@ -346,9 +346,11 @@ export default function TailwindPaletteGeneratorPage () {
                 <h6 className='text-sm font-semibold'>調整</h6>
                 <button
                   onClick={handleReset}
-                  className='rounded-lg px-2 py-1 text-sm font-medium uppercase outline-none transition-colors hover:bg-gray-100 focus-visible:bg-gray-100 dark:hover:bg-atom-one-dark-lighter focus-visible:dark:bg-atom-one-dark-lighter'
+                  className='rounded-lg p-1.5 outline-none transition-colors hover:bg-gray-100 focus-visible:bg-gray-100 dark:hover:bg-atom-one-dark-lighter focus-visible:dark:bg-atom-one-dark-lighter'
+                  title='調整をリセット'
+                  aria-label='調整をリセット'
                 >
-                  Reset
+                  <ArrowPathIcon className='size-5' />
                 </button>
               </div>
               <div className='space-y-4 px-4'>
@@ -381,9 +383,11 @@ export default function TailwindPaletteGeneratorPage () {
                 <h6 className='text-sm font-semibold'>生成されたパレット</h6>
                 <button
                   onClick={handleAddToHistory}
-                  className='rounded-lg px-2 py-1 text-sm font-medium uppercase outline-none transition-colors hover:bg-gray-100 focus-visible:bg-gray-100 dark:hover:bg-atom-one-dark-lighter focus-visible:dark:bg-atom-one-dark-lighter'
+                  className='rounded-lg p-1.5 outline-none transition-colors hover:bg-gray-100 focus-visible:bg-gray-100 dark:hover:bg-atom-one-dark-lighter focus-visible:dark:bg-atom-one-dark-lighter'
+                  title='ヒストリーに保存'
+                  aria-label='ヒストリーに保存'
                 >
-                  Save
+                  <BookmarkIcon className='size-5' />
                 </button>
               </div>
 
@@ -429,9 +433,11 @@ export default function TailwindPaletteGeneratorPage () {
                 <h6 className='text-sm font-semibold'>パレットヒストリー</h6>
                 <button
                   onClick={handleClearHistory}
-                  className='rounded-lg px-2 py-1 text-sm font-medium uppercase outline-none transition-colors hover:bg-gray-100 focus-visible:bg-gray-100 dark:hover:bg-atom-one-dark-lighter focus-visible:dark:bg-atom-one-dark-lighter'
+                  className='rounded-lg p-1.5 outline-none transition-colors hover:bg-gray-100 focus-visible:bg-gray-100 dark:hover:bg-atom-one-dark-lighter focus-visible:dark:bg-atom-one-dark-lighter'
+                  title='ヒストリーを全削除'
+                  aria-label='ヒストリーを全削除'
                 >
-                  Clear
+                  <TrashIcon className='size-5' />
                 </button>
               </div>
               {paletteHistory.length > 0
