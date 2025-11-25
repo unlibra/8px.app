@@ -20,6 +20,12 @@ import { calculateChekiPadding, determineChekiSize } from '@/lib/image/cheki-siz
 import { loadImageFromFile, processImageForCheki } from '@/lib/image/image-processing'
 import { getHeicSupport } from '@/lib/image/media-support'
 
+import sampleCheki1 from '@/assets/images/iromide/sample-cheki-1.webp'
+import sampleCheki2 from '@/assets/images/iromide/sample-cheki-2.webp'
+import sampleCheki3 from '@/assets/images/iromide/sample-cheki-3.webp'
+
+const sampleChekiImages = [sampleCheki1, sampleCheki2, sampleCheki3]
+
 const ACCEPTED_IMAGE_TYPES = 'image/png, image/jpeg, image/webp, image/gif, image/avif, image/tiff, image/bmp'
 const HEIC_TYPES = 'image/heic, image/heif'
 
@@ -251,10 +257,10 @@ export default function IromidePage () {
                 {/* Sample Polaroids */}
                 <div className='mb-12 min-h-72'>
                   <div className='flex justify-center gap-4 sm:gap-8'>
-                    {Array.from(Array(3)).map((_, index) => (
+                    {sampleChekiImages.map((src, index) => (
                       <Image
                         key={index}
-                        src={`/images/iromide/sample-cheki-${index + 1}.webp`}
+                        src={src}
                         alt={`Sample ${index + 1}`}
                         width={500}
                         height={600}
