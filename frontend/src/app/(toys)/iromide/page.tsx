@@ -170,12 +170,7 @@ export default function IromidePage () {
       const { domToBlob } = await import('modern-screenshot')
 
       // Capture the element
-      const blob = await domToBlob(shareTargetRef.current, {
-        scale: 1.5,
-        style: {
-          rotate: '180deg' // Flip back the rotation
-        }
-      })
+      const blob = await domToBlob(shareTargetRef.current, {})
 
       if (!blob) {
         toast.error('画像の生成に失敗しました')
@@ -319,7 +314,7 @@ export default function IromidePage () {
                 <div className='flex flex-col items-center gap-4'>
                   {/* Hidden Share Target - positioned off-screen */}
                   <div className='pointer-events-none fixed -top-[9999px]'>
-                    <CorkBoardBackground className='size-fit rotate-[180deg] p-16' ref={shareTargetRef}>
+                    <CorkBoardBackground className='size-fit p-16' ref={shareTargetRef}>
                       <div className='relative flex justify-center'>
                         {/* Decorative Masking Tape */}
                         <MaskingTape
@@ -342,7 +337,7 @@ export default function IromidePage () {
                               {extractedColors.map((color, index) => (
                                 <div
                                   key={index}
-                                  className='rounded-full border border-neutral-200'
+                                  className='rounded-full'
                                   style={{
                                     backgroundColor: color.hex,
                                     width: chekiPadding ? `${Math.round(chekiPadding.bottom * 0.3)}px` : '32px',
