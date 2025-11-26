@@ -44,26 +44,28 @@ H[shade] = lerpAngle(green.H[shade], cyan.H[shade], 0.46)
 **重要な改善**: アンカーマッチングを廃止し、常に補間を使用することで、
 微妙な色相の違い（シアンっぽい青 vs インディゴっぽい青）を保持。
 
-### 3. 黄色専用処理
+### 3. 黄色専用処理（非対称強度）
 
 **黄色は視覚的に特別**（人間の視覚システムの4つの基本色の1つ）：
 
 ```typescript
 // 黄色範囲（70-110°）で特別処理
 const YELLOW_HUE = 86°
-const SIGMA = 22  // ガウシアン標準偏差
+const SIGMA = 22  // ガウシアン標準偏差（対称）
 
-// ガウシアン影響度を計算
+// ガウシアン影響度を計算（対称）
 yellowInfluence = exp(-(distance²) / (2 * σ²))
 
-// 通常補間と黄色アンカーをブレンド
-finalValue = lerp(normalValue, yellowValue, yellowInfluence * 0.65)
+// 非対称な強度でブレンド
+const baseStrength = hue > 86° ? 0.8 : 0.5  // Lime側強く、Amber側弱く
+finalValue = lerp(normalValue, yellowValue, yellowInfluence * baseStrength)
 ```
 
 **効果**:
-- H=103°（薄い黄色）→ 74%の黄色影響（Lime化を防ぐ）
-- H=80°（Amber寄り）→ 97%の黄色影響
-- ガウシアン減衰で滑らかな境界（40°まで徐々に影響減少）
+- H=103°（薄い黄色）→ 59%の黄色影響（Lime化を強力に防ぐ）
+- H=95°（やや緑）→ 74%の黄色影響
+- H=80°（Amber寄り）→ 48%の黄色影響（Amberの個性を保持）
+- ガウシアン減衰で滑らかな境界、強度は方向別に最適化
 
 ### 4. パレット生成
 
@@ -239,11 +241,13 @@ npx tsx scripts/extract-anchor-colors.ts > output.txt
 ```typescript
 // src/lib/color/palette-generator.ts
 
-// ガウシアン標準偏差（影響範囲）
+// ガウシアン標準偏差（影響範囲・対称）
 const SIGMA = 22  // より広く: 25-30, より狭く: 15-20
 
-// ブレンド強度
-const blendStrength = yellowInfluence * 0.65  // より強く: 0.7-0.8, より弱く: 0.5-0.6
+// 非対称ブレンド強度
+const baseStrength = hue > YELLOW_HUE ? 0.8 : 0.5
+// Lime側をより強く: 0.8 → 0.85-0.9
+// Amber側をより弱く: 0.5 → 0.3-0.4
 
 // 適用範囲
 const YELLOW_RANGE_START = 70   // Amber寄り

@@ -110,12 +110,9 @@ function findAdjacentAnchors (hue: number): [AnchorColorName, AnchorColorName, n
 /**
  * Calculate yellow influence factor with Gaussian falloff
  * Yellow is visually special - human eyes are most sensitive to hue changes around yellow
- * This gives yellow more influence in its surrounding range to prevent unwanted amber/lime mixing
  *
- * Uses Gaussian distribution for smooth, natural falloff:
- * - SIGMA=22 provides good balance (significant influence up to ~20°, gradual fade to ~35°)
- * - Mathematically smooth (no discontinuities)
- * - Perceptually natural (mimics human color perception)
+ * Uses symmetric Gaussian distribution (SIGMA=22) for natural falloff.
+ * Asymmetry is applied at the blend strength level, not at the distribution level.
  */
 function getYellowInfluence (distanceToYellow: number): number {
   const SIGMA = 22 // Standard deviation (controls spread of influence)
@@ -163,9 +160,11 @@ function getBlendedValue (
     if (yellowInfluence > 0) {
       const yellowValue = ANCHOR_CURVES.yellow[curveType][shade]
 
-      // Blend normal interpolation with yellow value
-      // Use 65% strength for stronger yellow preservation
-      const blendStrength = yellowInfluence * 0.65
+      // Asymmetric blend strength:
+      // - Lime side (hue > 86°): stronger (0.8) to prevent lime-ification
+      // - Amber side (hue < 86°): moderate (0.5) to preserve amber character
+      const baseStrength = hue > YELLOW_HUE ? 0.8 : 0.5
+      const blendStrength = yellowInfluence * baseStrength
 
       if (curveType === 'hueShift') {
         return lerpAngle(normalValue, yellowValue, blendStrength)
