@@ -109,7 +109,7 @@ app.add_middleware(
     allow_origins=settings.allowed_origins_list,
     allow_credentials=False,
     allow_methods=['GET', 'POST'],
-    allow_headers=['Content-Type'],
+    allow_headers=['Content-Type', 'x-vercel-protection-bypass'],
 )
 
 # Include routers
