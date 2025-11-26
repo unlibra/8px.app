@@ -44,41 +44,73 @@ H[shade] = lerpAngle(green.H[shade], cyan.H[shade], 0.46)
 **重要な改善**: アンカーマッチングを廃止し、常に補間を使用することで、
 微妙な色相の違い（シアンっぽい青 vs インディゴっぽい青）を保持。
 
-### 3. 黄色専用処理（カーブ別最適化）
+### 3. 黄色専用処理（Cusp-aware & 非対称最適化）
 
 **黄色は視覚的に特別**（人間の視覚システムの4つの基本色の1つ）：
 
 ```typescript
 // 黄色範囲（70-110°）で特別処理
 const YELLOW_HUE = 86°
-const SIGMA = 22  // ガウシアン標準偏差（対称）
 
-// ガウシアン影響度を計算（対称）
+// 非対称ガウシアン標準偏差（Lime drift防止）
+const SIGMA_AMBER = 28  // Amber側：広い影響範囲（暖かさ保持）
+const SIGMA_LIME = 16   // Lime側：狭い影響範囲（緑化防止）
+
+sigma = hue < 86° ? SIGMA_AMBER : SIGMA_LIME
 yellowInfluence = exp(-(distance²) / (2 * σ²))
 
 // 基本強度（全カーブ共通）
 let baseStrength = 0.5
 
 // カーブ別の調整
-if (curveType === 'hueShift' && hue > 86° && yellowValue > 0) {
-  // Lime寄りで緑方向シフトを防ぐ
-  baseStrength *= 0.1  // 90%削減
-} else if (curveType === 'chroma' && hue > 86° && yellowValue < normalValue) {
-  // Lime寄りで鮮やかさを保持
-  baseStrength *= 0.3  // 70%削減
-} else if (curveType === 'lightness' && hue > 86° && yellowChroma < limeChroma) {
-  // Lime寄りで明るさを保持
-  baseStrength = max(baseStrength, 0.85)  // 強化
+if (curveType === 'hueShift') {
+  if (hue > 86° && yellowValue > 0) {
+    // Lime寄りで緑方向シフトを防ぐ
+    baseStrength *= 0.1  // 90%削減
+
+    // 高輝度シェード（50-400）でhueShiftを+4°にキャップ
+    if (shade <= 400) {
+      finalValue = min(finalValue, +4°)  // レモン色の緑化防止
+    }
+  } else if (hue < 86° && yellowValue < 0 && shade >= 600) {
+    // Amber寄りで茶色化を防ぐ
+    baseStrength *= 0.4  // 60%削減
+    finalValue = max(finalValue, -6°)  // オーカー崩壊防止
+  }
+} else if (curveType === 'chroma') {
+  if (hue > 86° && yellowValue < normalValue) {
+    // Lime寄りで鮮やかさを保持
+    baseStrength *= 0.3  // 70%削減
+  }
+
+  // Cusp-based chroma floor（全黄色範囲）
+  maxC = findMaxChroma(L, H)
+  scaledChroma = max(scaledChroma, maxC * 0.80)  // 80%フロア
+} else if (curveType === 'lightness') {
+  if (hue > 86° && yellowChroma < limeChroma) {
+    // Lime寄りで明るさを保持
+    baseStrength = max(baseStrength, 0.85)  // 強化
+  }
+
+  // Cusp-aware lightness floor（黄色のcusp≈L80を考慮）
+  lightnessFloor = {
+    50-400: 88,  // 高輝度シェード：非常に明るく保持
+    500-600: 80,  // 中輝度シェード：cusp付近を維持
+    700-800: 72,  // 中暗シェード：茶色化防止
+    900-950: 60   // 暗シェード：最低限の明るさ
+  }
+  finalValue = max(finalValue, lightnessFloor[shade])
 }
 
 finalValue = lerp(normalValue, yellowValue, yellowInfluence * baseStrength)
 ```
 
 **効果**:
-- **hueShift**: Lime化を防ぐため、緑方向へのシフトを大幅に抑制
-- **chroma**: Limeの高い彩度を活かし、鮮やかさを維持
-- **lightness**: 黄色の明るさを強く保持し、暗くなるのを防ぐ
-- ガウシアン減衰で滑らかな境界、カーブごとに最適化された処理
+- **非対称ガウシアン**: Lime方向のドリフトを大幅削減（σ 28→16）
+- **hueShift保護**: Lime側で+4°キャップ、Amber側で-6°クランプ
+- **Cusp-aware lightness**: シェードごとのL下限で茶色化/暗色化を防止
+- **Cusp-based chroma**: maxChromaの80%フロアで彩度を維持
+- **ガマット最適化**: 色相補正前に彩度フロアを適用
 
 ### 4. パレット生成
 
@@ -227,14 +259,17 @@ const rotated = generatePalette('#3B82F6', { hueShift: 30 })
 
 ## アルゴリズムの特長
 
-| 特長                 | 説明                                                                 |
-| -------------------- | -------------------------------------------------------------------- |
-| **色相の個性保持**   | 微妙な色相差（シアンっぽい青 vs インディゴっぽい青）を正確に保持    |
-| **滑らかな補間**     | 10アンカー間を補間、境界の不連続性なし                               |
-| **黄色の特別扱い**   | カーブ別最適化でライム化を防ぎつつ、鮮やかさと明るさを保持           |
-| **高速**             | 早期終了とバイナリサーチ最適化で0.032ms/パレット                     |
-| **正確性**           | OKLCh色空間で知覚的に均一な明度・彩度                                |
-| **科学的正当性**     | 人間の視覚システム（反対色理論）に基づく黄色の特別処理               |
+| 特長                       | 説明                                                                 |
+| -------------------------- | -------------------------------------------------------------------- |
+| **色相の個性保持**         | 微妙な色相差（シアンっぽい青 vs インディゴっぽい青）を正確に保持    |
+| **滑らかな補間**           | 10アンカー間を補間、境界の不連続性なし                               |
+| **非対称黄色処理**         | Lime drift防止のため非対称ガウシアン（Amber側σ=28、Lime側σ=16）    |
+| **Cusp-aware lightness**   | 黄色のcusp（L≈80）を考慮した明度下限で茶色化を防止                   |
+| **Cusp-based chroma**      | maxChromaの80%フロアで彩度を維持、色相補正前に適用                   |
+| **両側hueShift保護**       | Lime側で+4°キャップ、Amber側で-6°クランプ                           |
+| **高速**                   | 早期終了とバイナリサーチ最適化で0.032ms/パレット                     |
+| **正確性**                 | OKLCh色空間で知覚的に均一な明度・彩度                                |
+| **科学的正当性**           | 人間の視覚システム（反対色理論）とOKLab cusp理論に基づく処理         |
 
 ---
 
@@ -254,21 +289,43 @@ npx tsx scripts/extract-anchor-colors.ts > output.txt
 ```typescript
 // src/lib/color/palette-generator.ts
 
-// ガウシアン標準偏差（影響範囲）
-const SIGMA = 22  // より広く: 25-30, より狭く: 15-20
+// 非対称ガウシアン標準偏差（影響範囲）
+const SIGMA_AMBER = 28  // Amber側: より広く 30-35, より狭く 22-26
+const SIGMA_LIME = 16   // Lime側: より広く 18-22, より狭く 12-15
 
 // 基本ブレンド強度
 let baseStrength = 0.5  // より強く: 0.6-0.7, より弱く: 0.3-0.4
 
 // カーブ別調整係数
-if (curveType === 'hueShift' && ...) {
+if (curveType === 'hueShift') {
+  // Lime側
   baseStrength *= 0.1  // hueShift削減率: 0.05-0.2
+  MAX_HUE_SHIFT = 4    // 高輝度シェードキャップ: 3-6°
+  // Amber側
+  baseStrength *= 0.4  // hueShift削減率: 0.3-0.5
+  MIN_HUE_SHIFT = -6   // 暗シェードクランプ: -4 to -8°
 }
-if (curveType === 'chroma' && ...) {
-  baseStrength *= 0.3  // chroma削減率: 0.2-0.4
+if (curveType === 'chroma') {
+  baseStrength *= 0.3      // chroma削減率: 0.2-0.4
+  CHROMA_FLOOR_PCT = 0.80  // chromaフロア係数: 0.75-0.90
 }
-if (curveType === 'lightness' && ...) {
+if (curveType === 'lightness') {
   baseStrength = max(baseStrength, 0.85)  // lightness強化: 0.8-0.9
+}
+
+// Cusp-aware lightness floors（シェードごと）
+const YELLOW_LIGHTNESS_FLOOR = {
+  50: 88,   // 調整範囲: 85-92
+  100: 88,  // 調整範囲: 85-92
+  200: 88,  // 調整範囲: 85-92
+  300: 88,  // 調整範囲: 85-92
+  400: 88,  // 調整範囲: 85-92
+  500: 80,  // 調整範囲: 75-85（cusp付近）
+  600: 80,  // 調整範囲: 75-85
+  700: 72,  // 調整範囲: 68-76
+  800: 72,  // 調整範囲: 68-76
+  900: 60,  // 調整範囲: 55-65
+  950: 60   // 調整範囲: 55-65
 }
 
 // 適用範囲

@@ -108,20 +108,47 @@ function findAdjacentAnchors (hue: number): [AnchorColorName, AnchorColorName, n
 }
 
 /**
- * Calculate yellow influence factor with Gaussian falloff
+ * Calculate yellow influence factor with asymmetric Gaussian falloff
  * Yellow is visually special - human eyes are most sensitive to hue changes around yellow
  *
- * Uses symmetric Gaussian distribution (SIGMA=22) for natural falloff.
- * Asymmetry is applied at the blend strength level, not at the distribution level.
+ * Uses asymmetric Gaussian distribution to prevent lime drift:
+ * - Amber side (hue < 86°): σ=28 (wider influence, preserves warmth)
+ * - Lime side (hue > 86°): σ=16 (narrower influence, prevents greening)
  */
-function getYellowInfluence (distanceToYellow: number): number {
-  const SIGMA = 22 // Standard deviation (controls spread of influence)
+function getYellowInfluence (distanceToYellow: number, hue: number): number {
+  const YELLOW_HUE = 86
+
+  // Asymmetric Gaussian: wider on amber side, narrower on lime side
+  // This prevents "lemon" colors from drifting toward lime/green
+  const SIGMA_AMBER = 28  // Wider influence toward amber (preserves yellow warmth)
+  const SIGMA_LIME = 16   // Narrower influence toward lime (prevents greening)
+
+  const sigma = hue < YELLOW_HUE ? SIGMA_AMBER : SIGMA_LIME
 
   // Gaussian function: e^(-(distance²) / (2σ²))
-  // At distance=0: influence=1.0 (100%)
-  // At distance≈σ: influence≈0.6 (60%)
-  // At distance≈2σ: influence≈0.14 (14%)
-  return Math.exp(-(distanceToYellow ** 2) / (2 * SIGMA ** 2))
+  return Math.exp(-(distanceToYellow ** 2) / (2 * sigma ** 2))
+}
+
+/**
+ * Cusp-aware lightness floors for yellow-adjacent hues
+ * Yellow's maximum chroma in OKLab sits near L≈80, so darker shades
+ * need MINIMAL lightness floors to prevent brown-out when interpolation
+ * goes too dark. These are safety floors, not target values.
+ *
+ * Values are set conservatively below Tailwind yellow to prevent over-brightening.
+ */
+const YELLOW_LIGHTNESS_FLOOR: Record<TailwindShade, number> = {
+  50: 96,   // Very light shades: minimal intervention
+  100: 94,
+  200: 90,
+  300: 84,
+  400: 78,
+  500: 70,  // Below yellow-500 (79.5), only catches severe darkening
+  600: 58,  // Below yellow-600 (68.1)
+  700: 48,  // Below yellow-700 (55.4)
+  800: 40,  // Below yellow-800 (47.6)
+  900: 35,  // Below yellow-900 (42.1)
+  950: 24   // Below yellow-950 (28.6)
 }
 
 /**
@@ -155,7 +182,7 @@ function getBlendedValue (
   // Apply yellow influence if in yellow's range
   if (hue >= YELLOW_RANGE_START && hue <= YELLOW_RANGE_END) {
     const distanceToYellow = Math.abs(hue - YELLOW_HUE)
-    const yellowInfluence = getYellowInfluence(distanceToYellow)
+    const yellowInfluence = getYellowInfluence(distanceToYellow, hue)
 
     if (yellowInfluence > 0) {
       const yellowValue = ANCHOR_CURVES.yellow[curveType][shade]
@@ -172,6 +199,12 @@ function getBlendedValue (
         // reduce influence to avoid double-shifting toward lime
         if (hue > YELLOW_HUE && yellowValue > 0) {
           baseStrength *= 0.1
+        } else if (hue < YELLOW_HUE && yellowValue < 0 && shade >= 600) {
+          // Amber-side protection: Prevent dark yellows from collapsing into ochre
+          // by clamping negative hueShift in mid/dark tones
+          // For amber-side yellows in darker shades, limit how much they can shift
+          // toward orange/brown (prevent ochre collapse)
+          baseStrength *= 0.4
         }
       } else if (curveType === 'chroma') {
         // Preserve vibrancy: If input is lime-side and yellow's chroma is lower
@@ -181,21 +214,39 @@ function getBlendedValue (
         }
       } else if (curveType === 'lightness') {
         // Preserve yellow brightness: When chroma is being reduced (lime-side with
-        // lower yellow chroma), maintain or strengthen lightness influence to prevent
-        // the palette from appearing too dark
+        // lower yellow chroma), apply modest lightness boost to prevent darkening
+        // Reduced from 0.85 to 0.3 to avoid over-brightening all shades
         if (hue > YELLOW_HUE && ANCHOR_CURVES.yellow.chroma[shade] < ANCHOR_CURVES.lime.chroma[shade]) {
-          // Maintain full strength for lightness to preserve yellow's characteristic brightness
-          baseStrength = Math.max(baseStrength, 0.85)
+          baseStrength = Math.max(baseStrength, 0.3)
         }
       }
 
       const blendStrength = yellowInfluence * baseStrength
 
+      let finalValue: number
       if (curveType === 'hueShift') {
-        return lerpAngle(normalValue, yellowValue, blendStrength)
+        finalValue = lerpAngle(normalValue, yellowValue, blendStrength)
+
+        // Additional amber-side hueShift clamping for dark shades
+        if (hue < YELLOW_HUE && shade >= 600) {
+          const MIN_HUE_SHIFT = -6  // Prevent excessive shift toward orange/brown
+          finalValue = Math.max(finalValue, MIN_HUE_SHIFT)
+        } else if (hue > YELLOW_HUE && shade <= 400) {
+          // Cap hueShift toward 90° for high-L shades on lime side to prevent greening
+          const MAX_HUE_SHIFT = 4  // Keep lemon hues from greening
+          finalValue = Math.min(finalValue, MAX_HUE_SHIFT)
+        }
       } else {
-        return lerp(normalValue, yellowValue, blendStrength)
+        finalValue = lerp(normalValue, yellowValue, blendStrength)
       }
+
+      // Cusp-aware lightness floor: Keep yellows luminous instead of muddy
+      if (curveType === 'lightness') {
+        const minL = YELLOW_LIGHTNESS_FLOOR[shade]
+        finalValue = Math.max(finalValue, minL)
+      }
+
+      return finalValue
     }
   }
 
@@ -320,8 +371,21 @@ export function generatePalette (
     const l = targetL
     const h = normalizeHue(baseHue + hShift)
 
-    // Apply relative chroma scaling, clamped to gamut maximum
+    // Apply relative chroma scaling
     const scaledChroma = standardChroma * chromaScale
+
+    // Cusp-based chroma floor for yellow range (DISABLED for now)
+    // Yellow's sRGB gamut peaks near H≈95 with high C at mid-high L
+    // This floor was causing over-saturation of anchor colors
+    // May be re-enabled with careful tuning if specific desaturation issues arise
+    // if (inputOklch.h >= YELLOW_RANGE_START && inputOklch.h <= YELLOW_RANGE_END) {
+    //   const maxChroma = findMaxChromaInGamut(l, h)
+    //   const minChroma = maxChroma * 0.50  // 50% of max chroma as conservative floor
+    //
+    //   if (scaledChroma < minChroma) {
+    //     scaledChroma = minChroma
+    //   }
+    // }
 
     // Optimization: Early termination if scaledChroma is already in gamut
     // This skips the expensive binary search for ~50-70% of Tailwind colors
