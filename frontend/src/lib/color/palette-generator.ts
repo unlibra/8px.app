@@ -113,7 +113,8 @@ function findAdjacentAnchors (hue: number): [AnchorColorName, AnchorColorName, n
  *
  * Uses asymmetric Gaussian distribution to prevent lime drift:
  * - Amber side (hue < 86°): σ=28 (wider influence, preserves warmth)
- * - Lime side (hue > 86°): σ=16 (narrower influence, prevents greening)
+ * - Lime side (hue > 86°): σ=12 (narrower influence, prevents greening)
+ *   Reduced from 16 to 12 to better handle pure yellow (#ffff00, H≈110°)
  */
 function getYellowInfluence (distanceToYellow: number, hue: number): number {
   const YELLOW_HUE = 86
@@ -121,7 +122,7 @@ function getYellowInfluence (distanceToYellow: number, hue: number): number {
   // Asymmetric Gaussian: wider on amber side, narrower on lime side
   // This prevents "lemon" colors from drifting toward lime/green
   const SIGMA_AMBER = 28  // Wider influence toward amber (preserves yellow warmth)
-  const SIGMA_LIME = 16   // Narrower influence toward lime (prevents greening)
+  const SIGMA_LIME = 12   // Narrower influence toward lime (prevents greening of pure yellows)
 
   const sigma = hue < YELLOW_HUE ? SIGMA_AMBER : SIGMA_LIME
 
@@ -165,7 +166,7 @@ function getBlendedValue (
   // and we're most sensitive to hue variations around yellow
   const YELLOW_HUE = ANCHOR_CURVES.yellow.centerHue // 86°
   const YELLOW_RANGE_START = 70  // Amber side
-  const YELLOW_RANGE_END = 110   // Lime side
+  const YELLOW_RANGE_END = 115   // Lime side (extended to 115° to include pure yellow #ffff00 at H≈110°)
 
   // Get normal interpolation between adjacent anchors
   const [anchor1, anchor2, ratio] = findAdjacentAnchors(hue)
@@ -233,7 +234,8 @@ function getBlendedValue (
           finalValue = Math.max(finalValue, MIN_HUE_SHIFT)
         } else if (hue > YELLOW_HUE && shade <= 400) {
           // Cap hueShift toward 90° for high-L shades on lime side to prevent greening
-          const MAX_HUE_SHIFT = 4  // Keep lemon hues from greening
+          // Stricter cap for pure yellows (H>105°) to prevent lime drift
+          const MAX_HUE_SHIFT = hue > 105 ? 2 : 4
           finalValue = Math.min(finalValue, MAX_HUE_SHIFT)
         }
       } else {
