@@ -16,13 +16,24 @@ export const metadata: Metadata = tool
       openGraph: {
         type: 'website',
         url: `/${tool.id}`,
-        title: `${tool.name} - ${siteConfig.name}`,
+        title: `${tool.name}`,
         description: tool.description.replace(/\r?\n/g, ''),
-        siteName: siteConfig.name
+        siteName: siteConfig.name,
+        images: [{
+          url: `${process.env.NEXT_PUBLIC_OG_IMAGE_URL}/og.png`,
+          width: 1200,
+          height: 630
+        }]
       },
       twitter: {
-        title: `${tool.name} - ${siteConfig.name}`,
-        description: tool.description.replace(/\r?\n/g, '')
+        card: 'summary',
+        title: `${tool.name}`,
+        description: tool.description.replace(/\r?\n/g, ''),
+        images: [{
+          url: `${process.env.NEXT_PUBLIC_OG_IMAGE_URL}/og.png`,
+          width: 1200,
+          height: 630
+        }]
       }
     }
   : {}

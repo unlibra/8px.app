@@ -16,21 +16,21 @@ export const metadata: Metadata = tool
       openGraph: {
         type: 'website',
         url: `/${tool.id}`,
-        title: `${tool.name} - ${siteConfig.name}`,
+        title: `${tool.name}`,
         description: tool.description.replace(/\r?\n/g, ''),
         siteName: siteConfig.name,
         images: [{
-          url: 'https://8px.app/opengraph-image-iromide.png',
+          url: `${process.env.NEXT_PUBLIC_OG_IMAGE_URL}/og-iromide.png`,
           width: 1200,
           height: 630
         }]
       },
       twitter: {
         card: 'summary',
-        title: `${tool.name} - ${siteConfig.name}`,
+        title: `${tool.name}`,
         description: tool.description.replace(/\r?\n/g, ''),
         images: [{
-          url: 'https://8px.app/opengraph-image-iromide.png',
+          url: `${process.env.NEXT_PUBLIC_OG_IMAGE_URL}/og-iromide.png`,
           width: 1200,
           height: 630
         }]
