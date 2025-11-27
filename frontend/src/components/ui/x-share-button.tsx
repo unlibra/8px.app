@@ -9,7 +9,7 @@ export function XShareButton () {
   const [url, setUrl] = useState('')
 
   useEffect(() => {
-    setTitle(document.title)
+    setTitle(document.title.replace(/ \| [^ |]+$/, ''))
     setUrl(window.location.href)
   }, [])
 
