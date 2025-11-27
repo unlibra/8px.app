@@ -8,18 +8,6 @@ export const metadata: Metadata = {
   description: '個人情報の取り扱いやデータ処理について説明します。',
   alternates: {
     canonical: '/privacy'
-  },
-  openGraph: {
-    type: 'website',
-    url: '/privacy',
-    title: `プライバシーポリシー - ${siteConfig.name}`,
-    description: '個人情報の取り扱いやデータ処理について説明します。',
-    siteName: siteConfig.name
-  },
-  twitter: {
-    card: 'summary',
-    title: `プライバシーポリシー - ${siteConfig.name}`,
-    description: '個人情報の取り扱いやデータ処理について説明します。'
   }
 }
 
