@@ -2,7 +2,7 @@ import './globals.css'
 
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
-import type { Metadata, Viewport } from 'next'
+import type { Metadata } from 'next'
 // eslint-disable-next-line camelcase
 import { IBM_Plex_Sans_JP, Outfit, Roboto_Flex, Roboto_Mono, Zen_Maru_Gothic } from 'next/font/google'
 import type { ReactNode } from 'react'
@@ -87,13 +87,6 @@ export const metadata: Metadata = {
     apple: '/apple-touch-icon.png'
   },
   manifest: '/manifest.json'
-}
-
-export const viewport: Viewport = {
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#282c34' }
-  ]
 }
 
 export default function RootLayout ({
