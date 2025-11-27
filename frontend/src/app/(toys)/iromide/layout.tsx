@@ -20,7 +20,7 @@ export const metadata: Metadata = tool
         description: tool.description.replace(/\r?\n/g, ''),
         siteName: siteConfig.name,
         images: [{
-          url: 'https://8px.app/opengraph-image-iromide.png',
+          url: 'https://8px.app/images/opengraph-image-iromide.png',
           width: 1200,
           height: 630
         }]
@@ -30,7 +30,7 @@ export const metadata: Metadata = tool
         title: `${tool.name} - ${siteConfig.name}`,
         description: tool.description.replace(/\r?\n/g, ''),
         images: [{
-          url: 'https://8px.app/opengraph-image-iromide.png',
+          url: 'https://8px.app/images/opengraph-image-iromide.png',
           width: 1200,
           height: 630
         }]

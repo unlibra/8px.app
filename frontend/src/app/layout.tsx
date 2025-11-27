@@ -61,7 +61,7 @@ export const metadata: Metadata = {
     description: siteConfig.description.replace(/\r?\n/g, ''),
     siteName: siteConfig.name,
     images: [{
-      url: 'https://8px.app/opengraph-image.png',
+      url: 'https://8px.app/images/opengraph-image.png',
       width: 1200,
       height: 630
     }]
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
     title: siteConfig.title.default,
     description: siteConfig.description.replace(/\r?\n/g, ''),
     images: [{
-      url: 'https://8px.app/opengraph-image.png',
+      url: 'https://8px.app/images/opengraph-image.png',
       width: 1200,
       height: 630
     }]
