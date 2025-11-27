@@ -2,12 +2,12 @@ export const siteConfig = {
   name: '8px.app',
   url: 'https://8px.app',
   description: `その色も、そのアイコンも、思い通りに。
-Web・UI開発者のためのツールセット。
+Web・アプリ開発者のためのツールセット。
 すべて無料、すべてオープンソース。`,
   author: 'unlibra',
   title: {
     default: '8px.app - Developer Toolkit',
-    template: '%s - 8px.app'
+    template: '%s | 8px.app'
   },
   locale: 'ja_JP',
   links: {
