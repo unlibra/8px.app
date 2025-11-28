@@ -48,7 +48,7 @@ export default function Home () {
             {siteConfig.name}
           </h1>
           <p className='whitespace-pre-line font-medium'>
-            {siteConfig.description}
+            {siteConfig.heroDescription}
           </p>
         </div>
       </div>

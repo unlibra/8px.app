@@ -43,8 +43,8 @@ export const tools: Tool[] = [
   {
     id: 'tw-palette-generator',
     name: 'TWパレットジェネレーター',
-    description: `コーポレートカラーなど指定した色をベースに、TailwindCSSのカラーパレットに馴染む美しいパレットを自動生成。
-デザインシステムへの統合をスムーズにします。`,
+    description: `指定した色から、TailwindCSSに最適化されたカラーパレットを自動生成。
+コーポレートカラーやブランドカラーをベースに、50〜950まで統一感のある配色を無料で作成できます。`,
     shortDescription: '選んだ色からカラーパレットを生成',
     icon: twPaletteGeneratorIcon,
     category: 'tools'
@@ -52,9 +52,9 @@ export const tools: Tool[] = [
   {
     id: 'iromide',
     name: '推し色生成 イロマイド',
-    description: `好きな写真からカラーパレットを生成。
-人間の知覚に近い画像解析であなたの「推し色」を取り出せます。
-推し色をみんなにシェアしましょう！`,
+    description: `写真から推し色のカラーパレットを生成する無料ツール。
+人間の知覚に近い画像解析で、あなたの「推し色」を抽出。
+チェキ風デザインでSNSシェアも簡単です。`,
     shortDescription: '写真から推し色チェキを作ろう！',
     icon: iromideIcon,
     category: 'toys',
@@ -62,8 +62,8 @@ export const tools: Tool[] = [
   {
     id: 'favicon-generator',
     name: 'Faviconジェネレーター',
-    description: `JPEG、PNG、WEBPなどの画像やSVGをアップロードするだけで、モダンなWebサイトに必要なFaviconとApple Touch Iconを一括生成。
-角丸加工、背景色設定も一発で完了します。`,
+    description: `無料のFavicon一括生成ツール。PNG、JPEG、SVGなどの画像をアップロードするだけで、Webサイトに必要な全サイズのFaviconとApple Touch Iconを自動生成。
+角丸加工や背景色の設定もブラウザ上で簡単に完了します。`,
     shortDescription: '画像からfaviconファイルを生成',
     icon: faviconGeneratorIcon,
     category: 'tools'
@@ -71,8 +71,8 @@ export const tools: Tool[] = [
   {
     id: 'svg-optimizer',
     name: 'SVG最適化',
-    description: `SVGファイルを、品質を保ったまま軽量化。
-Webサイトのパフォーマンス向上に役立つシンプルで確実な最適化ツールです。`,
+    description: `無料のSVG最適化・圧縮ツール。品質を保ったままファイルサイズを削減し、Webサイトの読み込み速度を改善。
+ブラウザ上で完結するため、セキュアで高速に最適化できます。`,
     shortDescription: 'SVGファイルを最適化・圧縮',
     icon: svgOptimizerIcon,
     category: 'tools'
@@ -80,8 +80,8 @@ Webサイトのパフォーマンス向上に役立つシンプルで確実な�
   {
     id: 'password-generator',
     name: 'パスワードジェネレーター',
-    description: `シンプルなパスワードジェネレーター。
-パスワードの長さと文字種を指定して、簡単にパスワードを生成できます。`,
+    description: `無料の強力なパスワード生成ツール。文字数、大文字・小文字・数字・記号を自由に組み合わせて、セキュアなパスワードを作成。
+紛らわしい文字の除外にも対応し、ブラウザ完結で安全です。`,
     shortDescription: 'シンプルなパスワードジェネレーター',
     icon: passwordGeneratorIcon,
     category: 'tools'
