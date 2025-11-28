@@ -237,217 +237,217 @@ export default function IromidePage () {
       onFileDrop={handleFileSelect}
       accept={isHeicSupport ? `${ACCEPTED_IMAGE_TYPES}, ${HEIC_TYPES}` : ACCEPTED_IMAGE_TYPES}
     >
-      <CorkBoardBackground className='left-1/2 -mb-12 -mt-6 w-screen -translate-x-1/2 px-4 py-12 shadow-inner sm:px-6 sm:py-20 lg:px-8'>
-        <div className='mx-auto flex min-h-[calc(100vh-160px)] max-w-screen-md flex-col px-4'>
-          {/* Header */}
-          <div className='mb-16 text-center'>
-            <h1 className='text-3xl font-bold'>{tool?.name ?? 'iromide'}</h1>
-            {!imagePreview && (
-              <p className='mt-2 whitespace-pre-line text-gray-500'>
-                {tool?.description ?? ''}
-              </p>
-            )}
-          </div>
+      <div className='fixed left-0 right-0 h-screen top-0 bottom-0 -z-10'>
+        <CorkBoardBackground className='h-full'/>
+      </div>
+      <div className='mx-auto flex min-h-[calc(100vh-160px)] max-w-screen-md flex-col px-6 py-12 sm:px-8 sm:py-20 lg:px-12'>
+        {/* Header */}
+        <div className='mb-16 text-center'>
+          <h1 className='text-3xl font-bold'>{tool?.name ?? 'iromide'}</h1>
+          {!imagePreview && (
+            <p className='mt-2 whitespace-pre-line text-gray-500'>
+              {tool?.description ?? ''}
+            </p>
+          )}
+        </div>
 
-          {/* Main Content */}
-          {!imagePreview && !isProcessing
-            ? (
-              // Upload State with Samples
-              <div className='flex flex-1 flex-col items-center justify-center gap-8'>
-                {/* Sample Polaroids */}
-                <div className='mb-12 min-h-72'>
-                  <div className='flex justify-center gap-4 sm:gap-8'>
-                    {sampleChekiImages.map((src, index) => (
-                      <Image
-                        key={index}
-                        src={src}
-                        alt={`Sample ${index + 1}`}
-                        width={500}
-                        height={600}
-                        sizes='(max-width: 833px) 60vw, 500px'
-                        onLoad={() => {
-                          setLoadedSamples(prev => new Set(prev).add(index))
-                        }}
-                        className={`h-[calc(min(60vh,60vw*6/5))] max-h-[60vh] w-auto max-w-[60vw] transition-opacity drag-none ${loadedSamples.has(index) ? 'opacity-100' : 'opacity-0'}`}
-                        style={{ transform: `rotate(${index === 0 ? 2 : index === 1 ? -2 : 1}deg)` }}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                {/* Upload Area */}
-                <div className='flex w-full max-w-lg flex-col items-center justify-center gap-6 rounded-2xl border-2 border-dashed border-gray-300 bg-white px-6 py-12 dark:border-gray-600 dark:bg-atom-one-dark'>
-                  <PhotoIcon className='size-10 text-gray-500' />
-                  <span className='font-semibold'>
-                    あなたの画像で試す
-                  </span>
-                  <label>
-                    <input
-                      type='file'
-                      accept={isHeicSupport ? `${ACCEPTED_IMAGE_TYPES}, ${HEIC_TYPES}` : ACCEPTED_IMAGE_TYPES}
-                      onChange={(e) => handleFileSelect(e.target.files?.[0] ?? null)}
-                      className='hidden'
+        {/* Main Content */}
+        {!imagePreview && !isProcessing
+          ? (
+            // Upload State with Samples
+            <div className='flex flex-1 flex-col items-center justify-center gap-8'>
+              {/* Sample Polaroids */}
+              <div className='mb-12 min-h-72'>
+                <div className='flex justify-center gap-4 sm:gap-8'>
+                  {sampleChekiImages.map((src, index) => (
+                    <Image
+                      key={index}
+                      src={src}
+                      alt={`Sample ${index + 1}`}
+                      width={500}
+                      height={600}
+                      sizes='(max-width: 833px) 60vw, 500px'
+                      onLoad={() => {
+                        setLoadedSamples(prev => new Set(prev).add(index))
+                      }}
+                      className={`h-[calc(min(60vh,60vw*6/5))] max-h-[60vh] w-auto max-w-[60vw] transition-opacity drag-none ${loadedSamples.has(index) ? 'opacity-100' : 'opacity-0'}`}
+                      style={{ transform: `rotate(${index === 0 ? 2 : index === 1 ? -2 : 1}deg)` }}
                     />
-                    <span className='inline-block cursor-pointer rounded-full bg-sky-500 px-8 py-3 font-medium text-white transition-colors hover:bg-sky-600 dark:bg-sky-600 dark:hover:bg-sky-500'>
-                      画像を選択
-                    </span>
-                  </label>
-                </div>
-
-                <div className='space-y-2'>
-                  <p className='text-center text-sm text-gray-600 dark:text-gray-400'>
-                    推奨: 縦長 (3:4) / 正方形 (1:1) / 横長 (8:5)
-                  </p>
-                  {/* Privacy Notice */}
-                  <p className='text-center text-sm text-gray-600 dark:text-gray-400'>
-                    画像は処理のみに使用され、保存されません
-                  </p>
+                  ))}
                 </div>
               </div>
+
+              {/* Upload Area */}
+              <div className='flex w-full max-w-lg flex-col items-center justify-center gap-6 rounded-2xl border-2 border-dashed border-gray-300 bg-white px-6 py-12 dark:border-gray-600 dark:bg-atom-one-dark'>
+                <PhotoIcon className='size-10 text-gray-500' />
+                <span className='font-semibold'>
+                  あなたの画像で試す
+                </span>
+                <label>
+                  <input
+                    type='file'
+                    accept={isHeicSupport ? `${ACCEPTED_IMAGE_TYPES}, ${HEIC_TYPES}` : ACCEPTED_IMAGE_TYPES}
+                    onChange={(e) => handleFileSelect(e.target.files?.[0] ?? null)}
+                    className='hidden'
+                  />
+                  <span className='inline-block cursor-pointer rounded-full bg-sky-500 px-8 py-3 font-medium text-white transition-colors hover:bg-sky-600 dark:bg-sky-600 dark:hover:bg-sky-500'>
+                    画像を選択
+                  </span>
+                </label>
+              </div>
+
+              <div className='space-y-2'>
+                <p className='text-center text-sm text-gray-600 dark:text-gray-400'>
+                  推奨: 縦長 (3:4) / 正方形 (1:1) / 横長 (8:5)
+                </p>
+                {/* Privacy Notice */}
+                <p className='text-center text-sm text-gray-600 dark:text-gray-400'>
+                  画像は処理のみに使用され、保存されません
+                </p>
+              </div>
+            </div>
+            )
+          : isProcessing
+            ? (
+              // Processing State
+              <div className='flex flex-1 flex-col items-center justify-center gap-4'>
+                <Spinner size={24} />
+                <p className='text-lg font-medium text-gray-600 dark:text-gray-400'>
+                  解析中
+                </p>
+              </div>
               )
-            : isProcessing
-              ? (
-                // Processing State
-                <div className='flex flex-1 flex-col items-center justify-center gap-4'>
-                  <Spinner size={24} />
-                  <p className='text-lg font-medium text-gray-600 dark:text-gray-400'>
-                    解析中
-                  </p>
-                </div>
-                )
-              : (
-                // Result State
-                <div className='flex flex-col items-center gap-4'>
-                  {/* Hidden Share Target - positioned off-screen */}
-                  <div className='pointer-events-none fixed -top-[9999px]'>
-                    <CorkBoardBackground className='size-fit p-16' ref={shareTargetRef}>
-                      <div className='relative flex justify-center'>
-                        {/* Decorative Masking Tape */}
-                        <MaskingTape
-                          className='absolute left-1/2 top-0 z-10 -translate-x-1/2 -translate-y-1/2'
-                          width={Math.round((chekiPadding?.top ?? 0) * (chekiSize?.aspectRatio === 'landscape' ? 3.2 : 2.4))}
-                          height={Math.round((chekiPadding?.top ?? 0) * 0.8)}
-                        />
+            : (
+              // Result State
+              <div className='flex flex-col items-center gap-4'>
+                {/* Hidden Share Target - positioned off-screen */}
+                <div className='pointer-events-none fixed -top-[9999px]'>
+                  <CorkBoardBackground className='size-fit p-16' ref={shareTargetRef}>
+                    <div className='relative flex justify-center'>
+                      {/* Decorative Masking Tape */}
+                      <MaskingTape
+                        className='absolute left-1/2 top-0 z-10 -translate-x-1/2 -translate-y-1/2'
+                        width={Math.round((chekiPadding?.top ?? 0) * (chekiSize?.aspectRatio === 'landscape' ? 3.2 : 2.4))}
+                        height={Math.round((chekiPadding?.top ?? 0) * 0.8)}
+                      />
 
-                        <PolaroidFrame
-                          image={{
-                            src: imagePreview!,
-                            alt: 'Uploaded',
-                            className: 'w-auto max-w-none' // Display cropped image at native size
-                          }}
-                          rotation={resultRotation}
-                          chekiPadding={chekiPadding ?? undefined}
-                        >
-                          <div className='relative flex size-full flex-col items-center gap-2'>
-                            <div className='absolute bottom-1/2 left-1/2 flex -translate-x-1/2 gap-2 '>
-                              {extractedColors.map((color, index) => (
-                                <div
-                                  key={index}
-                                  className='rounded-full'
-                                  style={{
-                                    backgroundColor: color.hex,
-                                    width: chekiPadding ? `${Math.round(chekiPadding.bottom * 0.3)}px` : '32px',
-                                    height: chekiPadding ? `${Math.round(chekiPadding.bottom * 0.3)}px` : '32px'
-                                  }}
-                                />
-                              ))}
+                      <PolaroidFrame
+                        image={{
+                          src: imagePreview!,
+                          alt: 'Uploaded',
+                          className: 'w-auto max-w-none' // Display cropped image at native size
+                        }}
+                        rotation={resultRotation}
+                        chekiPadding={chekiPadding ?? undefined}
+                      >
+                        <div className='relative flex size-full flex-col items-center gap-2'>
+                          <div className='absolute bottom-1/2 left-1/2 flex -translate-x-1/2 gap-2 '>
+                            {extractedColors.map((color, index) => (
+                              <div
+                                key={index}
+                                className='rounded-full'
+                                style={{
+                                  backgroundColor: color.hex,
+                                  width: chekiPadding ? `${Math.round(chekiPadding.bottom * 0.3)}px` : '32px',
+                                  height: chekiPadding ? `${Math.round(chekiPadding.bottom * 0.3)}px` : '32px'
+                                }}
+                              />
+                            ))}
+                          </div>
+                          {message && (
+                            <div className='absolute left-1/2 top-1/2 w-full -translate-x-1/2 p-1'>
+                              <p
+                                className='line-clamp-1 text-center font-medium text-gray-700 antialiased' style={{
+                                  fontSize: chekiPadding ? `${Math.round(chekiPadding.bottom * 0.25)}px` : '24px'
+                                }}
+                              >
+                                {message}
+                              </p>
                             </div>
-                            {message && (
-                              <div className='absolute left-1/2 top-1/2 w-full -translate-x-1/2 p-1'>
-                                <p
-                                  className='line-clamp-1 text-center font-medium text-gray-700 antialiased' style={{
-                                    fontSize: chekiPadding ? `${Math.round(chekiPadding.bottom * 0.25)}px` : '24px'
-                                  }}
-                                >
-                                  {message}
-                                </p>
-                              </div>
-                            )}
-                          </div>
-                        </PolaroidFrame>
-                      </div>
-                    </CorkBoardBackground>
-                  </div>
-
-                  {/* Visible Display Polaroid */}
-                  <div className={`relative mb-8 transition-opacity ${isPolaroidLoaded ? 'opacity-100' : 'opacity-0'}`}>
-                    <MaskingTape
-                      className='absolute left-1/2 top-0 z-10 -translate-x-1/2 -translate-y-1/2'
-                      width={Math.round((thumbnailPadding?.top ?? 0) * (thumbnailSize?.aspectRatio === 'landscape' ? 3.2 : 2.4))}
-                      height={Math.round((thumbnailPadding?.top ?? 0) * 0.8)}
-                    />
-                    <PolaroidFrame
-                      image={{
-                        src: imagePreview!,
-                        alt: 'Uploaded',
-                        onLoad: () => setIsPolaroidLoaded(true),
-                        className: 'max-w-[80vw] max-h-[50vh]'
-                      }}
-                      rotation={resultRotation}
-                      chekiPadding={thumbnailPadding ?? undefined}
-                    >
-                      <div className='relative flex size-full flex-col items-center gap-2'>
-                        <div className='absolute bottom-1/2 left-1/2 flex -translate-x-1/2 gap-2 '>
-                          {extractedColors.map((color, index) => (
-                            <div
-                              key={index}
-                              className='rounded-full'
-                              style={{
-                                backgroundColor: color.hex,
-                                width: thumbnailPadding ? `${Math.round(thumbnailPadding.bottom * 0.3)}px` : '32px',
-                                height: thumbnailPadding ? `${Math.round(thumbnailPadding.bottom * 0.3)}px` : '32px'
-                              }}
-                            />
-                          ))}
+                          )}
                         </div>
-                        {message && (
-                          <div className='absolute left-1/2 top-1/2 w-full -translate-x-1/2 p-1'>
-                            <p
-                              className='line-clamp-1 text-center font-medium text-gray-700 antialiased' style={{
-                                fontSize: thumbnailPadding ? `${Math.round(thumbnailPadding.bottom * 0.25)}px` : '24px'
-                              }}
-                            >
-                              {message}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    </PolaroidFrame>
-                  </div>
-
-                  {/* Message Input */}
-                  <div className='mb-6 w-full max-w-md'>
-                    <input
-                      type='text'
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      placeholder='メッセージを追加 (任意)'
-                      className='w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-center outline-none transition-colors focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-sky-500 dark:border-gray-600 dark:bg-atom-one-dark-light'
-                    />
-                  </div>
-
-                  {/* Actions */}
-                  <div className='flex flex-col items-center gap-8'>
-                    <button
-                      onClick={handleSharePalette}
-                      disabled={isSharing}
-                      className='flex w-40 items-center justify-center gap-2 rounded-full bg-sky-500 py-3 font-medium text-white transition-colors hover:bg-sky-600 disabled:opacity-50'
-                    >
-                      {isSharing && <Spinner className='size-5' />}
-                      {isSharing ? '発行中...' : 'シェアする'}
-                    </button>
-                    <button
-                      onClick={handleReset}
-                      className='w-40 rounded-lg bg-stone-200 py-3 font-medium text-gray-600 transition-colors hover:bg-stone-300 dark:bg-atom-one-dark-light dark:text-gray-400 dark:hover:bg-atom-one-dark-lighter'
-                    >
-                      別の画像で試す
-                    </button>
-                  </div>
+                      </PolaroidFrame>
+                    </div>
+                  </CorkBoardBackground>
                 </div>
-                )}
-        </div>
-        <SupportSection />
-      </CorkBoardBackground>
+
+                {/* Visible Display Polaroid */}
+                <div className={`relative mb-8 transition-opacity ${isPolaroidLoaded ? 'opacity-100' : 'opacity-0'}`}>
+                  <MaskingTape
+                    className='absolute left-1/2 top-0 z-10 -translate-x-1/2 -translate-y-1/2'
+                    width={Math.round((thumbnailPadding?.top ?? 0) * (thumbnailSize?.aspectRatio === 'landscape' ? 3.2 : 2.4))}
+                    height={Math.round((thumbnailPadding?.top ?? 0) * 0.8)}
+                  />
+                  <PolaroidFrame
+                    image={{
+                      src: imagePreview!,
+                      alt: 'Uploaded',
+                      onLoad: () => setIsPolaroidLoaded(true),
+                      className: 'max-w-[80vw] max-h-[50vh]'
+                    }}
+                    rotation={resultRotation}
+                    chekiPadding={thumbnailPadding ?? undefined}
+                  >
+                    <div className='relative flex size-full flex-col items-center gap-2'>
+                      <div className='absolute bottom-1/2 left-1/2 flex -translate-x-1/2 gap-2 '>
+                        {extractedColors.map((color, index) => (
+                          <div
+                            key={index}
+                            className='rounded-full'
+                            style={{
+                              backgroundColor: color.hex,
+                              width: thumbnailPadding ? `${Math.round(thumbnailPadding.bottom * 0.3)}px` : '32px',
+                              height: thumbnailPadding ? `${Math.round(thumbnailPadding.bottom * 0.3)}px` : '32px'
+                            }}
+                          />
+                        ))}
+                      </div>
+                      {message && (
+                        <div className='absolute left-1/2 top-1/2 w-full -translate-x-1/2 p-1'>
+                          <p
+                            className='line-clamp-1 text-center font-medium text-gray-700 antialiased' style={{
+                              fontSize: thumbnailPadding ? `${Math.round(thumbnailPadding.bottom * 0.25)}px` : '24px'
+                            }}
+                          >
+                            {message}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </PolaroidFrame>
+                </div>
+
+                {/* Message Input */}
+                <div className='mb-6 w-full max-w-md'>
+                  <input
+                    type='text'
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder='メッセージを追加 (任意)'
+                    className='w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-center outline-none transition-colors focus-visible:border-transparent focus-visible:ring-2 focus-visible:ring-sky-500 dark:border-gray-600 dark:bg-atom-one-dark-light'
+                  />
+                </div>
+
+                {/* Actions */}
+                <div className='flex flex-col items-center gap-8'>
+                  <button
+                    onClick={handleSharePalette}
+                    disabled={isSharing}
+                    className='flex w-40 items-center justify-center gap-2 rounded-full bg-sky-500 py-3 font-medium text-white transition-colors hover:bg-sky-600 disabled:opacity-50'
+                  >
+                    {isSharing && <Spinner className='size-5' />}
+                    {isSharing ? '発行中...' : 'シェアする'}
+                  </button>
+                  <button
+                    onClick={handleReset}
+                    className='w-40 rounded-lg bg-stone-200 py-3 font-medium text-gray-600 transition-colors hover:bg-stone-300 dark:bg-atom-one-dark-light dark:text-gray-400 dark:hover:bg-atom-one-dark-lighter'
+                  >
+                    別の画像で試す
+                  </button>
+                </div>
+              </div>
+              )}
+      </div>
     </FullPageDropZone>
   )
 }
