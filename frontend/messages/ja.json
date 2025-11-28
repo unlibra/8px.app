@@ -81,6 +81,7 @@
     "unsupportedFileType": "対応していないファイル形式です。",
     "fileValidationError": "ファイルの検証中にエラーが発生しました。",
     "dropToUpload": "ドロップして画像をアップロード",
+    "networkError": "ネットワークエラーが発生しました。しばらく待ってから再度お試しください。",
     "themeLight": "ライト",
     "themeDark": "ダーク",
     "themeSystem": "システム"

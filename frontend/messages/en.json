@@ -81,6 +81,7 @@
     "unsupportedFileType": "Unsupported file type.",
     "fileValidationError": "An error occurred while validating the file.",
     "dropToUpload": "Drop to upload image",
+    "networkError": "A network error occurred. Please try again later.",
     "themeLight": "Light",
     "themeDark": "Dark",
     "themeSystem": "System"

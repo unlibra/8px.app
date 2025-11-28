@@ -17,7 +17,7 @@ import { useToast } from '@/components/ui/toast'
 import { siteConfig } from '@/config/site'
 import { getToolById } from '@/config/tools'
 import type { ExtractedColor } from '@/lib/api/colors'
-import { extractColorsFromImage, } from '@/lib/api/colors'
+import { extractColorsFromImage, NetworkError } from '@/lib/api/colors'
 import { validateImageFile } from '@/lib/file/file-validation'
 import type { ChekiPadding, ChekiSize } from '@/lib/image/cheki-size'
 import { calculateChekiPadding, determineChekiSize } from '@/lib/image/cheki-size'
@@ -138,8 +138,18 @@ export default function IromidePage () {
       const colors = await extractColorsFromImage(file, colorCount)
       setExtractedColors(colors)
     } catch (err) {
-      // Display detailed error message from API
-      const errorMessage = err instanceof Error ? err.message : t('iromide.errors.colorExtractionFailed')
+      // Handle different types of errors
+      let errorMessage: string
+      if (err instanceof NetworkError) {
+        // Network errors (Cloudflare block, API server down, etc.)
+        errorMessage = t('common.networkError')
+      } else if (err instanceof Error) {
+        // API errors with specific messages
+        errorMessage = err.message
+      } else {
+        // Unknown errors
+        errorMessage = t('iromide.errors.colorExtractionFailed')
+      }
       toast.error(errorMessage)
       console.error('Failed to extract colors:', err)
     } finally {
