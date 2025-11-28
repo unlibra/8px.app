@@ -50,7 +50,9 @@
   "supportSection": {
     "title": "応援よろしくお願いします！",
     "shareOnX": "ポストする",
-    "sendTip": "チップを送る"
+    "shareOnHatena": "ブックマーク",
+    "sendTip": "チップを送る",
+    "share": "シェアする"
   },
   "privacy": {
     "title": "プライバシーポリシー",
@@ -84,7 +86,8 @@
     "networkError": "ネットワークエラーが発生しました。しばらく待ってから再度お試しください。",
     "themeLight": "ライト",
     "themeDark": "ダーク",
-    "themeSystem": "システム"
+    "themeSystem": "システム",
+    "error": "エラーが発生しました"
   },
   "faviconGenerator": {
     "outputOptions": "出力オプション",

@@ -19,7 +19,7 @@ export function LocaleSwitcher () {
   return (
     <Popover className='relative'>
       <PopoverButton
-        className='flex items-center justify-center gap-2 rounded-full p-2 outline-none transition-colors hover:bg-gray-100 focus-visible:bg-gray-100 dark:hover:bg-atom-one-dark-lighter focus-visible:dark:bg-atom-one-dark-lighter'
+        className='flex items-center justify-center gap-2 rounded-full p-2 outline-none transition-colors hover:bg-black/5 focus-visible:bg-black/5 dark:hover:bg-white/5 focus-visible:dark:bg-white/5'
         aria-label='Change language'
       >
         <GlobeAltIcon className='size-5' />

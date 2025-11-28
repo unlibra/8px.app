@@ -50,7 +50,9 @@
   "supportSection": {
     "title": "Your support means the world!",
     "shareOnX": "Share on X",
-    "sendTip": "Send a Tip"
+    "shareOnHatena": "Bookmark",
+    "sendTip": "Send a Tip",
+    "share": "Share"
   },
   "privacy": {
     "title": "Privacy Policy",
@@ -84,7 +86,8 @@
     "networkError": "A network error occurred. Please wait a moment and try again.",
     "themeLight": "Light",
     "themeDark": "Dark",
-    "themeSystem": "System"
+    "themeSystem": "System",
+    "error": "Something went wrong"
   },
   "faviconGenerator": {
     "outputOptions": "Output Options",

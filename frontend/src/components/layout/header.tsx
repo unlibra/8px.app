@@ -19,7 +19,7 @@ function CategoryPopover ({ category }: { category: typeof categories[number] })
   return (
     <Popover className='group relative'>
       <PopoverButton
-        className='flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium uppercase outline-none transition-colors hover:bg-gray-100 data-[focus]:bg-gray-100 data-[open]:bg-gray-100 dark:hover:bg-atom-one-dark-lighter data-[focus]:dark:bg-atom-one-dark-lighter data-[open]:dark:bg-atom-one-dark-lighter'
+        className='flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium uppercase outline-none transition-colors hover:bg-black/5 data-[focus]:bg-black/5 data-[open]:bg-black/5 dark:hover:bg-white/5 data-[focus]:dark:bg-white/5 data-[open]:dark:bg-white/5'
       >
         {t(`categories.${category.id}`)}
         <ChevronDownIcon className='size-4 transition-transform group-data-[open]:rotate-180' />

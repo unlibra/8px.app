@@ -24,7 +24,7 @@ function ThemePopoverContent ({
     <>
       <PopoverButton
         ref={buttonRef}
-        className='flex items-center justify-center rounded-full p-2 outline-none transition-colors hover:bg-gray-100 focus-visible:bg-gray-100 dark:hover:bg-atom-one-dark-lighter focus-visible:dark:bg-atom-one-dark-lighter'
+        className='flex items-center justify-center rounded-full p-2 outline-none transition-colors hover:bg-black/5 focus-visible:bg-black/5 dark:hover:bg-white/5 focus-visible:dark:bg-white/5'
         aria-label={t('aria.toggleTheme')}
       >
         {isLight ? <SunIcon className='size-5' /> : <MoonIcon className='size-5' />}
