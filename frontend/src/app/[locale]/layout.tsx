@@ -4,7 +4,7 @@ import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata } from 'next'
 // eslint-disable-next-line camelcase
-import { IBM_Plex_Sans_JP, Outfit, Roboto_Flex, Roboto_Mono, Zen_Maru_Gothic } from 'next/font/google'
+import { IBM_Plex_Sans_JP, Outfit, Roboto_Mono, Zen_Maru_Gothic } from 'next/font/google'
 import { notFound } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
@@ -17,15 +17,10 @@ import type { Locale } from '@/i18n/request'
 import { locales } from '@/i18n/request'
 import { Providers } from '@/lib/providers'
 
-const fontASCII = Roboto_Flex({
-  subsets: ['latin'],
-  variable: '--font-ascii',
-  display: 'swap'
-})
-
-const fontJP = IBM_Plex_Sans_JP({
+const fontSans = IBM_Plex_Sans_JP({
   weight: ['400', '500', '600', '700'],
-  variable: '--font-jp',
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-sans',
   display: 'swap',
   preload: false
 })
@@ -135,7 +130,7 @@ export default async function LocaleLayout ({
   return (
     <html
       lang={locale}
-      className={`${fontASCII.variable} ${fontJP.variable} ${fontMono.variable} ${fontZenMaru.variable} ${fontOutfit.variable}`}
+      className={`${fontSans.variable} ${fontMono.variable} ${fontZenMaru.variable} ${fontOutfit.variable}`}
       suppressHydrationWarning
     >
       <body
