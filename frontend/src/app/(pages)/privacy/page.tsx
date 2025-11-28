@@ -165,7 +165,7 @@ export default function PrivacyPage () {
         </section>
 
         <div className='mt-12 border-t border-gray-300 pt-8 text-sm text-gray-500 dark:border-gray-700 dark:text-gray-500'>
-          <p>最終更新日: {new Date().getFullYear()}年{new Date().getMonth() + 1}月{new Date().getDate()}日</p>
+          <p>最終更新日: 2025年11月27日</p>
         </div>
       </div>
     </div>
