@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 
+import { WebApplicationSchema } from '@/components/seo/web-application-schema'
 import { siteConfig } from '@/config/site'
 import { getToolById } from '@/config/tools'
 
@@ -39,5 +40,10 @@ export const metadata: Metadata = tool
   : {}
 
 export default function IromideLayout ({ children }: { children: ReactNode }) {
-  return <div className='font-[family-name:var(--font-zen-maru)]'>{children}</div>
+  return (
+    <div className='font-[family-name:var(--font-zen-maru)]'>
+      {tool && <WebApplicationSchema tool={tool} />}
+      {children}
+    </div>
+  )
 }
