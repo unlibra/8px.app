@@ -22,8 +22,17 @@ const categoryDefinitions = [
 // Auto-extract category ID type
 export type CategoryId = typeof categoryDefinitions[number]['id']
 
+// Tool IDs that match translation keys
+export type ToolId = [
+  'tw-palette-generator',
+  'iromide',
+  'favicon-generator',
+  'svg-optimizer',
+  'password-generator'
+][number]
+
 export type Tool = {
-  id: string
+  id: ToolId
   name: string
   description: string
   shortDescription?: string // For popovers and compact displays

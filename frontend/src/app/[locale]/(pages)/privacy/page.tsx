@@ -22,8 +22,8 @@ export async function generateMetadata ({ params }: { params: Promise<{ locale: 
 
 export default async function PrivacyPage ({ params }: { params: Promise<{ locale: 'ja' | 'en' }> }) {
   const { locale } = await params
+  // Use object access for full TypeScript type safety
   const messages = await getMessages(locale)
-  const privacy = messages.privacy
 
   // Load markdown file
   const markdownPath = join(process.cwd(), 'src', 'messages', `privacy.${locale}.md`)
@@ -33,8 +33,8 @@ export default async function PrivacyPage ({ params }: { params: Promise<{ local
     <div className='mx-auto max-w-3xl'>
       <Breadcrumb
         items={[
-          { label: privacy.breadcrumb.home, href: '/' },
-          { label: privacy.title }
+          { label: messages.privacy.breadcrumb.home, href: '/' },
+          { label: messages.privacy.title }
         ]}
       />
 

@@ -1,7 +1,8 @@
 import enMessages from '@/messages/en'
 import jaMessages from '@/messages/ja'
 
-import type { Locale } from './types'
+import type { Messages } from '@/messages/ja'
+import type { Locale, NestedKeys } from './types'
 
 const messagesMap = {
   ja: jaMessages,
@@ -9,20 +10,31 @@ const messagesMap = {
 }
 
 /**
- * Get messages for a specific locale
+ * Get messages object for server components
+ * Provides full TypeScript type safety with object property access
+ *
+ * @example
+ * const messages = await getMessages(locale)
+ * return <div>{messages.privacy.breadcrumb.home}</div>
  */
 export async function getMessages (locale: Locale) {
   return messagesMap[locale]
 }
 
+type MessageKeys = NestedKeys<Messages>
+
 /**
  * Get translation function for server components
- * Supports both namespaced and global key access
+ * Best for dynamic key access with template literals
+ *
+ * @example
+ * const t = await getTranslations(locale)
+ * return <div>{t(`tools.${toolId}.name`)}</div>
  */
-export async function getTranslations (locale: Locale, namespace?: string) {
+export async function getTranslations (locale: Locale, namespace?: string): Promise<(key: MessageKeys) => string> {
   const msgs = await getMessages(locale)
 
-  return (key: string) => {
+  return (key: MessageKeys) => {
     const fullKey = namespace ? `${String(namespace)}.${key}` : key
     const keys = fullKey.split('.')
     let obj: any = msgs

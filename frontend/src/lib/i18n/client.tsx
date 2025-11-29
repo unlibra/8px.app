@@ -3,7 +3,9 @@
 import type { ReactNode } from 'react'
 import { createContext, useCallback, useContext, } from 'react'
 
-import type { Locale } from './types'
+import type { Messages } from '@/messages/ja'
+
+import type { Locale, NestedKeys } from './types'
 
 interface I18nContextValue {
   locale: Locale
@@ -37,14 +39,32 @@ function useI18nContext () {
 }
 
 /**
- * Get translation function for client components
- * Supports both namespaced and global key access
+ * Get messages object for client components
+ * Provides full TypeScript type safety with object property access
+ *
+ * @example
+ * const messages = useMessages()
+ * return <div>{messages.privacy.breadcrumb.home}</div>
  */
-export function useTranslations (namespace?: string) {
+export function useMessages () {
+  return useI18nContext().messages
+}
+
+type MessageKeys = NestedKeys<Messages>
+
+/**
+ * Get translation function for client components
+ * Best for dynamic key access with template literals
+ *
+ * @example
+ * const t = useTranslations()
+ * return <div>{t(`tools.${toolId}.name`)}</div>
+ */
+export function useTranslations (namespace?: string): (key: MessageKeys) => string {
   const { locale, messages } = useI18nContext()
 
   return useCallback(
-    (key: string) => {
+    (key: MessageKeys) => {
       const fullKey = namespace ? `${String(namespace)}.${key}` : key
       const keys = fullKey.split('.')
       let obj: any = messages
