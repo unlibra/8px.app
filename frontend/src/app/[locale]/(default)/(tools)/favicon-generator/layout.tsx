@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 
 import { WebApplicationSchema } from '@/components/web-application-schema'
-import type { Locale } from '@/lib/i18n/types'
+import type { Locale } from '@/lib/i18n'
 import { generateToolMetadata } from '@/lib/metadata'
 
 export async function generateMetadata ({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {

@@ -1,9 +1,8 @@
 import Image from 'next/image'
 
-import { Link } from '@/components/link'
 import type { Tool } from '@/config/tools'
-import { getTranslations } from '@/lib/i18n/server'
-import type { Locale } from '@/lib/i18n/types'
+import type { Locale } from '@/lib/i18n'
+import { i18n, } from '@/lib/i18n'
 
 type ToolCardProps = {
   tool: Tool
@@ -12,10 +11,10 @@ type ToolCardProps = {
 }
 
 export async function ToolCard ({ tool, iconBgColor, locale }: ToolCardProps) {
-  const t = await getTranslations(locale)
+  const t = await i18n.server.getTranslations(locale)
 
   return (
-    <Link
+    <i18n.client.Link
       href={`/${tool.id}`}
       className='group flex w-full flex-col gap-2 rounded-lg p-4 text-left outline-none transition-colors hover:bg-gray-100 focus-visible:bg-gray-100 dark:hover:bg-atom-one-dark-light focus-visible:dark:bg-atom-one-dark-light'
     >
@@ -39,6 +38,6 @@ export async function ToolCard ({ tool, iconBgColor, locale }: ToolCardProps) {
       <p className='text-sm text-gray-600 dark:text-gray-400'>
         {t(`tools.${tool.id}.description`).replace(/\r?\n/g, '')}
       </p>
-    </Link>
+    </i18n.client.Link>
   )
 }

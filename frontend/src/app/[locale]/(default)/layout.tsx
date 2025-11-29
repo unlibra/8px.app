@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 import { SupportSection } from '@/components/layout/support-section'
-import type { Locale } from '@/lib/i18n/types'
+import type { Locale } from '@/lib/i18n'
 
 export default async function WithSupportLayout ({
   children,

@@ -5,12 +5,11 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useCallback, useState } from 'react'
 
 import { LogoIcon } from '@/components/icons/logo-icon'
-import { Link } from '@/components/link'
 import { categories } from '@/config/tools'
-import { useMessages, useTranslations } from '@/lib/i18n/client'
+import { i18n } from '@/lib/i18n'
 
 export function MobileMenuButton () {
-  const t = useTranslations()
+  const t = i18n.client.useTranslations()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const handleOpenMobileMenu = useCallback(() => {
@@ -50,8 +49,8 @@ function MobileMenu ({
   onClose: (open: boolean) => void
   onCloseMobile: () => void
 }) {
-  const messages = useMessages()
-  const t = useTranslations()
+  const messages = i18n.client.useMessages()
+  const t = i18n.client.useTranslations()
 
   return (
     <Transition show={isOpen}>
@@ -80,10 +79,10 @@ function MobileMenu ({
           >
             <DialogPanel className='fixed inset-y-0 left-0 w-[85vw] max-w-sm overflow-y-auto bg-white px-4 py-4 shadow-xl dark:bg-atom-one-dark-light'>
               <div className='flex items-center justify-between'>
-                <Link href='/' className='flex items-center gap-2 font-logo text-xl font-semibold' onClick={onCloseMobile}>
+                <i18n.client.Link href='/' className='flex items-center gap-2 font-logo text-xl font-semibold' onClick={onCloseMobile}>
                   <LogoIcon className='size-6' />
                   {messages.site.name}
-                </Link>
+                </i18n.client.Link>
                 <button
                   type='button'
                   className='flex items-center justify-center rounded-lg p-2 outline-none transition hover:bg-black/5 active:bg-black/10 hover:dark:bg-white/5 active:dark:bg-white/10'
@@ -101,7 +100,7 @@ function MobileMenu ({
                         {t(`categories.${category.id}`)}
                       </div>
                       {category.tools.map((tool) => (
-                        <Link
+                        <i18n.client.Link
                           key={tool.id}
                           href={`/${tool.id}`}
                           className='block rounded-lg px-3 py-2 transition-colors hover:bg-gray-100 dark:hover:bg-atom-one-dark-lighter'
@@ -111,7 +110,7 @@ function MobileMenu ({
                           <div className='mt-0.5 text-xs text-gray-600 dark:text-gray-400'>
                             {t(`tools.${tool.id}.shortDescription`)}
                           </div>
-                        </Link>
+                        </i18n.client.Link>
                       ))}
                     </div>
                   ))}

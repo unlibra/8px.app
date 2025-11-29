@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 
 import { siteConfig } from '@/config/site'
-import { getMessages } from '@/lib/i18n/server'
-import type { Locale } from '@/lib/i18n/types'
+import type { Locale } from '@/lib/i18n'
+import { i18n, } from '@/lib/i18n'
 
 /**
  * Generate metadata for tool pages with proper i18n support
@@ -12,7 +12,7 @@ export async function generateToolMetadata (
   pathname: string,
   locale: Locale
 ): Promise<Metadata> {
-  const messages = await getMessages(locale)
+  const messages = await i18n.server.getMessages(locale)
   const tool = messages.tools[toolId as keyof typeof messages.tools]
 
   const title = tool.name

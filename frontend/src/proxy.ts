@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
-import { defaultLocale, locales } from '@/lib/i18n/types'
+import { defaultLocale, locales } from '@/lib/i18n'
 
 export function proxy (request: NextRequest) {
   const { pathname } = request.nextUrl

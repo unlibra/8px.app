@@ -1,7 +1,7 @@
 import { ChevronRightIcon } from '@heroicons/react/24/outline'
 
-import { Link } from '@/components/link'
 import { siteConfig } from '@/config/site'
+import { i18n } from '@/lib/i18n'
 
 interface BreadcrumbItem {
   label: string
@@ -40,9 +40,9 @@ export function Breadcrumb ({ items }: BreadcrumbProps) {
             {index > 0 && <ChevronRightIcon className='size-4 shrink-0 text-gray-600 dark:text-gray-400' aria-hidden='true' />}
             {item.href
               ? (
-                <Link href={item.href} className='truncate font-medium leading-none text-blue-600 outline-none transition-colors hover:text-blue-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-500 dark:text-blue-400 dark:hover:text-blue-300'>
+                <i18n.client.Link href={item.href} className='truncate font-medium leading-none text-blue-600 outline-none transition-colors hover:text-blue-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-500 dark:text-blue-400 dark:hover:text-blue-300'>
                   {item.label}
-                </Link>
+                </i18n.client.Link>
                 )
               : (
                 <span className='truncate font-medium leading-none text-gray-600 dark:text-gray-400' aria-current='page'>

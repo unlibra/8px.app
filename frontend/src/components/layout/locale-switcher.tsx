@@ -5,9 +5,8 @@ import { GlobeAltIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-import { getLocalizedPath, useLocale } from '@/lib/i18n/client'
-import type { Locale } from '@/lib/i18n/types'
-import { defaultLocale, locales } from '@/lib/i18n/types'
+import type { Locale } from '@/lib/i18n'
+import { defaultLocale, getLocalizedPath, i18n, locales } from '@/lib/i18n'
 
 const localeNames: Record<string, string> = {
   ja: '日本語',
@@ -15,7 +14,7 @@ const localeNames: Record<string, string> = {
 }
 
 export function LocaleSwitcher () {
-  const locale = useLocale()
+  const locale = i18n.client.useLocale()
   const pathname = usePathname()
 
   // Remove current locale prefix from pathname to get base path

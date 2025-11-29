@@ -12,7 +12,7 @@ import { FullPageDropZone } from '@/components/ui/full-page-drop-zone'
 import { useToast } from '@/components/ui/toast'
 import type { SvgoOptions } from '@/lib/generators/svgo'
 import { optimizeSvg } from '@/lib/generators/svgo'
-import { useTranslations } from '@/lib/i18n/client'
+import { i18n } from '@/lib/i18n'
 import { validateSvgFile } from '@/lib/utils/file'
 
 import { SvgOptionsPanel } from './_components/svg-options-panel'
@@ -20,7 +20,7 @@ import type { PresetId } from './_lib/svgo-presets'
 import { DEFAULT_SVGO_OPTIONS, PRESETS } from './_lib/svgo-presets'
 
 export default function SvgOptimizerPage () {
-  const t = useTranslations()
+  const t = i18n.client.useTranslations()
   const toast = useToast()
   const [originalSvg, setOriginalSvg] = useState<string | null>(null)
   const [previewOptimizedSvg, setPreviewOptimizedSvg] = useState<string | null>(null)

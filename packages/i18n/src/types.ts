@@ -1,8 +1,3 @@
-export type Locale = 'ja' | 'en'
-
-export const locales: Locale[] = ['ja', 'en']
-export const defaultLocale: Locale = 'ja'
-
 /**
  * Recursively extract nested keys from an object type
  * Example: { common: { copy: 'Copy' } } -> 'common.copy'
@@ -14,3 +9,12 @@ export type NestedKeys<T, Prefix extends string = ''> = {
       ? `${Prefix}${K}` | NestedKeys<T[K], `${Prefix}${K}.`>
       : never
 }[keyof T & string]
+
+/**
+ * Configuration for i18n system
+ */
+export interface I18nConfig<L extends string, M extends Record<string, any>> {
+  locales: readonly L[]
+  defaultLocale: L
+  messages: Record<L, M>
+}

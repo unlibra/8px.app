@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next'
 
 import { siteConfig } from '@/config/site'
 import { categories } from '@/config/tools'
-import { defaultLocale, locales } from '@/lib/i18n/types'
+import { defaultLocale, locales } from '@/lib/i18n'
 
 export const dynamic = 'force-static'
 

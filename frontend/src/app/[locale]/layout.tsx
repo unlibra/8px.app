@@ -9,11 +9,11 @@ import type { ReactNode } from 'react'
 import { Footer } from '@/components/layout/footer'
 import { Header } from '@/components/layout/header'
 import { siteConfig } from '@/config/site'
-import { I18nProvider } from '@/lib/i18n/client'
-import { getMessages } from '@/lib/i18n/server'
-import type { Locale } from '@/lib/i18n/types'
-import { locales } from '@/lib/i18n/types'
+import type { Locale } from '@/lib/i18n'
+import { i18n, } from '@/lib/i18n'
 import { Providers } from '@/lib/providers'
+
+const locales: readonly Locale[] = ['ja', 'en']
 
 const fontSans = IBM_Plex_Sans_JP({
   weight: ['400', '500', '600', '700'],
@@ -50,7 +50,7 @@ export function generateStaticParams () {
 
 export async function generateMetadata ({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params
-  const messages = await getMessages(locale)
+  const messages = await i18n.server.getMessages(locale)
 
   return {
     title: messages.site.title.default,
@@ -122,6 +122,9 @@ export default async function LocaleLayout ({
     notFound()
   }
 
+  // Get messages as plain object (not ES module)
+  const currentMessages = await i18n.server.getMessages(locale)
+
   return (
     <html
       lang={locale}
@@ -131,7 +134,10 @@ export default async function LocaleLayout ({
       <body
         className='bg-white text-gray-700 antialiased dark:bg-atom-one-dark dark:text-gray-300'
       >
-        <I18nProvider locale={locale as Locale}>
+        <i18n.client.Provider
+          locale={locale as Locale}
+          messages={currentMessages}
+        >
           <Providers>
             <div className='flex min-h-screen flex-col overflow-x-hidden'>
               <Header locale={locale as Locale} />
@@ -141,7 +147,7 @@ export default async function LocaleLayout ({
               <Footer locale={locale as Locale} />
             </div>
           </Providers>
-        </I18nProvider>
+        </i18n.client.Provider>
         <Analytics />
         <SpeedInsights />
       </body>

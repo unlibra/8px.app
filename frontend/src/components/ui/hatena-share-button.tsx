@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from 'react'
 
-import { useTranslations } from '@/lib/i18n/client'
+import { i18n } from '@/lib/i18n'
 
 import { HatenaIcon } from '../icons/hatena-icon'
 
 export function HatenaShareButton () {
-  const t = useTranslations()
+  const t = i18n.client.useTranslations()
   const [title, setTitle] = useState('')
   const [url, setUrl] = useState('')
 

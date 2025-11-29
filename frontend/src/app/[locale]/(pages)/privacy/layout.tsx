@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 
-import { getMessages } from '@/lib/i18n/server'
+import { i18n } from '@/lib/i18n'
 
 export async function generateMetadata ({ params }: { params: Promise<{ locale: 'ja' | 'en' }> }): Promise<Metadata> {
   const { locale } = await params
-  const messages = await getMessages(locale)
+  const messages = await i18n.server.getMessages(locale)
   const privacy = messages.privacy
 
   return {

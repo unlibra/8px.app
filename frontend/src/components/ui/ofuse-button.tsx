@@ -2,10 +2,10 @@
 
 import { OfuseIcon } from '@/components/icons/ofuse-icon'
 import { siteConfig } from '@/config/site'
-import { useTranslations } from '@/lib/i18n/client'
+import { i18n } from '@/lib/i18n'
 
 export function OfuseButton () {
-  const t = useTranslations()
+  const t = i18n.client.useTranslations()
   const ofuseUrl = siteConfig.links.sponsor
 
   if (!ofuseUrl) return <></>
