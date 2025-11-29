@@ -7,7 +7,7 @@ export const site: SameStructure<typeof jaSite> = {
   description:
     'Craft your perfect colors and icons. 8px.app offers a free toolkit for web and app developers, including favicon generation, color palette creation, SVG optimization, and more. No account needed, start creating instantly.',
   heroDescription:
-    'Your vision, your design. A comprehensive toolkit for web and app developers. Completely free, entirely open source.',
+    'Your vision, your design.\nA comprehensive toolkit for web and app developers.\nCompletely free, entirely open source.',
   title: {
     default: '8px.app - Developer Toolkit',
     template: '%s | 8px.app',
