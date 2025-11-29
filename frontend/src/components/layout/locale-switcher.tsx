@@ -5,9 +5,9 @@ import { GlobeAltIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-import { useLocale } from '@/lib/i18n/client'
 import type { Locale } from '@/lib/i18n'
-import { defaultLocale, getLocalizedPath, locales } from '@/lib/i18n'
+import { getLocalizedPath, locales } from '@/lib/i18n'
+import { useLocale } from '@/lib/i18n/client'
 
 const localeNames: Record<string, string> = {
   ja: '日本語',
