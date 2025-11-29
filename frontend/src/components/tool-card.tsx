@@ -1,10 +1,10 @@
 'use client'
 
 import Image from 'next/image'
-import { useTranslations } from 'next-intl'
+import Link from 'next/link'
 
 import type { Tool } from '@/config/tools'
-import { Link } from '@/i18n/navigation'
+import { useTranslations } from '@/lib/i18n/client'
 
 type ToolCardProps = {
   tool: Tool

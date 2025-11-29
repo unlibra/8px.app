@@ -1,38 +1,40 @@
 import { readFile } from 'fs/promises'
 import type { Metadata } from 'next'
-import { getLocale, getTranslations } from 'next-intl/server'
 import { join } from 'path'
 import ReactMarkdown from 'react-markdown'
 
 import { Breadcrumb } from '@/components/ui/breadcrumb'
+import { getMessages } from '@/lib/i18n/server'
 
-export async function generateMetadata (): Promise<Metadata> {
-  const t = await getTranslations('privacy')
-  const locale = await getLocale()
+export async function generateMetadata ({ params }: { params: Promise<{ locale: 'ja' | 'en' }> }): Promise<Metadata> {
+  const { locale } = await params
+  const messages = await getMessages(locale)
+  const privacy = messages.privacy
 
   return {
-    title: t('title'),
-    description: t('description'),
+    title: privacy.title,
+    description: privacy.description,
     alternates: {
       canonical: locale === 'ja' ? '/privacy' : '/en/privacy'
     }
   }
 }
 
-export default async function PrivacyPage () {
-  const t = await getTranslations('privacy')
-  const locale = await getLocale()
+export default async function PrivacyPage ({ params }: { params: Promise<{ locale: 'ja' | 'en' }> }) {
+  const { locale } = await params
+  const messages = await getMessages(locale)
+  const privacy = messages.privacy
 
   // Load markdown file
-  const markdownPath = join(process.cwd(), 'messages', `privacy.${locale}.md`)
+  const markdownPath = join(process.cwd(), 'src', 'messages', `privacy.${locale}.md`)
   const markdownContent = await readFile(markdownPath, 'utf-8')
 
   return (
     <div className='mx-auto max-w-3xl'>
       <Breadcrumb
         items={[
-          { label: t('breadcrumb.home'), href: '/' },
-          { label: t('title') }
+          { label: privacy.breadcrumb.home, href: '/' },
+          { label: privacy.title }
         ]}
       />
 

@@ -2,10 +2,11 @@
 
 import { CloseButton, Popover, PopoverButton, PopoverPanel, Transition } from '@headlessui/react'
 import { GlobeAltIcon } from '@heroicons/react/24/outline'
-import { useLocale } from 'next-intl'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
-import { Link, usePathname } from '@/i18n/navigation'
-import { locales } from '@/i18n/request'
+import { useLocale } from '@/lib/i18n/client'
+import { locales } from '@/lib/i18n/types'
 
 const localeNames: Record<string, string> = {
   ja: '日本語',

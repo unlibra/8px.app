@@ -1,9 +1,10 @@
 'use client'
 
 import { DocumentPlusIcon } from '@heroicons/react/24/outline'
-import { useTranslations } from 'next-intl'
 import type { DragEvent, ReactNode } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
+
+import { useTranslations } from '@/lib/i18n/client'
 
 import { useToast } from './toast'
 

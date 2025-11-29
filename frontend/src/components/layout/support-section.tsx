@@ -1,11 +1,10 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
-
 import { HatenaShareButton } from '@/components/ui/hatena-share-button'
 import { OfuseButton } from '@/components/ui/ofuse-button'
 import { ShareButton } from '@/components/ui/share-button'
 import { XShareButton } from '@/components/ui/x-share-button'
+import { useTranslations } from '@/lib/i18n/client'
 
 export function SupportSection () {
   const t = useTranslations()

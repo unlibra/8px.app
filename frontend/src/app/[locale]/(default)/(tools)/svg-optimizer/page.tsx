@@ -3,7 +3,6 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { PhotoIcon, PlusIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
-import { useTranslations } from 'next-intl'
 import type { ChangeEvent } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
@@ -13,6 +12,7 @@ import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { FullPageDropZone } from '@/components/ui/full-page-drop-zone'
 import { useToast } from '@/components/ui/toast'
 import { validateSvgFile } from '@/lib/file/file-validation'
+import { useTranslations } from '@/lib/i18n/client'
 import type { PresetId, SvgoOptions } from '@/lib/image/svgo-optimizer'
 import { DEFAULT_SVGO_OPTIONS, optimizeSvg, PRESETS } from '@/lib/image/svgo-optimizer'
 

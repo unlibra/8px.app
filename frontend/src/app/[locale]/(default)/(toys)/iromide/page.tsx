@@ -2,7 +2,6 @@
 
 import { PhotoIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
-import { useTranslations } from 'next-intl'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import sampleCheki1 from '@/assets/images/iromide/sample-cheki-1.webp'
@@ -18,6 +17,7 @@ import { siteConfig } from '@/config/site'
 import type { ExtractedColor } from '@/lib/api/colors'
 import { extractColorsFromImage, NetworkError } from '@/lib/api/colors'
 import { validateImageFile } from '@/lib/file/file-validation'
+import { useTranslations } from '@/lib/i18n/client'
 import type { ChekiPadding, ChekiSize } from '@/lib/image/cheki-size'
 import { calculateChekiPadding, determineChekiSize } from '@/lib/image/cheki-size'
 import { loadImageFromFile, processImageForCheki } from '@/lib/image/image-processing'

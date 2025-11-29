@@ -1,9 +1,9 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 
 import { XIcon } from '@/components/icons/x-icon'
+import { useTranslations } from '@/lib/i18n/client'
 
 export function XShareButton () {
   const t = useTranslations()

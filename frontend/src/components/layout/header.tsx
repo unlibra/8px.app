@@ -2,13 +2,13 @@
 
 import { CloseButton, Dialog, DialogPanel, Popover, PopoverButton, PopoverPanel, Transition, TransitionChild } from '@headlessui/react'
 import { Bars3Icon, ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { useTranslations } from 'next-intl'
+import Link from 'next/link'
 import { useCallback, useState } from 'react'
 
 import { LogoIcon } from '@/components/icons/logo-icon'
 import { siteConfig } from '@/config/site'
 import { categories } from '@/config/tools'
-import { Link } from '@/i18n/navigation'
+import { useTranslations } from '@/lib/i18n/client'
 
 import { LocaleSwitcher } from './locale-switcher'
 import { ThemeToggle } from './theme-toggle'

@@ -3,7 +3,6 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { PhotoIcon, PlusIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
-import { useTranslations } from 'next-intl'
 import type { ChangeEvent } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
@@ -13,6 +12,7 @@ import { FullPageDropZone } from '@/components/ui/full-page-drop-zone'
 import { useToast } from '@/components/ui/toast'
 import { validateImageFile } from '@/lib/file/file-validation'
 import { createZip } from '@/lib/file/zip-utils'
+import { useTranslations } from '@/lib/i18n/client'
 import type { FaviconSize, OutputSetId } from '@/lib/image/favicon-generator'
 import {
   DEFAULT_OUTPUT_SETS,

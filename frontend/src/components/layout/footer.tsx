@@ -1,12 +1,12 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
+import Link from 'next/link'
 
 import { GitHubIcon } from '@/components/icons/github-icon'
 import { LogoIcon } from '@/components/icons/logo-icon'
 import { siteConfig } from '@/config/site'
 import { categories } from '@/config/tools'
-import { Link } from '@/i18n/navigation'
+import { useTranslations } from '@/lib/i18n/client'
 
 export function Footer () {
   const t = useTranslations()

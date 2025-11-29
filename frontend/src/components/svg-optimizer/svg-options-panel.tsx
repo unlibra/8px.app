@@ -2,10 +2,10 @@
 
 import { Field, Label, Switch } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/solid'
-import { useTranslations } from 'next-intl'
 import { useCallback } from 'react'
 
 import { Slider } from '@/components/ui/slider'
+import { useTranslations } from '@/lib/i18n/client'
 import type { PresetId, SvgoOptions } from '@/lib/image/svgo-optimizer'
 import { PRESETS } from '@/lib/image/svgo-optimizer'
 
@@ -62,7 +62,7 @@ export function SvgOptionsPanel ({ options, onOptionsChange, selectedPreset, onP
                   ? 'bg-sky-500 text-white hover:bg-sky-600 dark:bg-sky-600 dark:hover:bg-sky-500'
                   : 'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600'
               }`}
-              aria-label={t('svgOptimizer.selectPreset', { preset: t(`svgOptimizer.${preset.id}`) })}
+              aria-label={`Select preset: ${t(`svgOptimizer.${preset.id}`)}`}
               aria-pressed={selectedPreset === preset.id}
             >
               {t(`svgOptimizer.${preset.id}`)}

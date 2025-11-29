@@ -1,7 +1,6 @@
 'use client'
 
 import { ArrowPathIcon, ClipboardDocumentIcon, PlusIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { useTranslations } from 'next-intl'
 import { useCallback, useEffect, useState } from 'react'
 
 import { HueSlider } from '@/components/tw-palette-generator/hue-slider'
@@ -19,6 +18,7 @@ import {
 } from '@/lib/color/palette-generator'
 import type { TailwindColorName, TailwindShade } from '@/lib/color/tailwind-colors'
 import { getColorNames, getShades, isGrayScale, tailwindColors } from '@/lib/color/tailwind-colors'
+import { useTranslations } from '@/lib/i18n/client'
 
 export default function TailwindPaletteGeneratorPage () {
   const t = useTranslations()

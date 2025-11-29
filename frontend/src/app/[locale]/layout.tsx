@@ -4,15 +4,15 @@ import type { Metadata } from 'next'
 // eslint-disable-next-line camelcase
 import { IBM_Plex_Sans_JP, Outfit, Roboto_Mono, Zen_Maru_Gothic } from 'next/font/google'
 import { notFound } from 'next/navigation'
-import { NextIntlClientProvider } from 'next-intl'
-import { getMessages } from 'next-intl/server'
 import type { ReactNode } from 'react'
 
 import { Footer } from '@/components/layout/footer'
 import { Header } from '@/components/layout/header'
 import { siteConfig } from '@/config/site'
-import type { Locale } from '@/i18n/request'
-import { locales } from '@/i18n/request'
+import { I18nProvider } from '@/lib/i18n/client'
+import { getMessages } from '@/lib/i18n/server'
+import type { Locale } from '@/lib/i18n/types'
+import { locales } from '@/lib/i18n/types'
 import { Providers } from '@/lib/providers'
 
 const fontSans = IBM_Plex_Sans_JP({
@@ -50,7 +50,7 @@ export function generateStaticParams () {
 
 export async function generateMetadata ({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params
-  const messages = await getMessages({ locale }) as { site: { description: string, title: { default: string } } }
+  const messages = await getMessages(locale)
 
   return {
     title: messages.site.title.default,
@@ -123,7 +123,7 @@ export default async function LocaleLayout ({
   }
 
   // Get messages for the locale
-  const messages = await getMessages()
+  const messages = await getMessages(locale as Locale)
 
   return (
     <html
@@ -134,7 +134,7 @@ export default async function LocaleLayout ({
       <body
         className='bg-white text-gray-700 antialiased dark:bg-atom-one-dark dark:text-gray-300'
       >
-        <NextIntlClientProvider messages={messages}>
+        <I18nProvider locale={locale as Locale} messages={messages}>
           <Providers>
             <div className='flex min-h-screen flex-col overflow-x-hidden'>
               <Header />
@@ -144,7 +144,7 @@ export default async function LocaleLayout ({
               <Footer />
             </div>
           </Providers>
-        </NextIntlClientProvider>
+        </I18nProvider>
         <Analytics />
         <SpeedInsights />
       </body>

@@ -1,9 +1,8 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
-
 import { Slider } from '@/components/ui/slider'
 import { TogglePill } from '@/components/ui/toggle-pill'
+import { useTranslations } from '@/lib/i18n/client'
 import type { FaviconSize, OutputSetId } from '@/lib/image/favicon-generator'
 import { AVAILABLE_SIZES, DEFAULT_SIZES, OUTPUT_SETS } from '@/lib/image/favicon-generator'
 
@@ -52,10 +51,7 @@ export function FaviconOptionsPanel ({
               key={outputSet.id}
               pressed={selectedSets.has(outputSet.id)}
               onClick={() => onSetToggle(outputSet.id)}
-              ariaLabel={t('faviconGenerator.toggleFormat', {
-                format: outputSet.label,
-                action: selectedSets.has(outputSet.id) ? t('faviconGenerator.deselect') : t('faviconGenerator.select')
-              })}
+              ariaLabel={`${selectedSets.has(outputSet.id) ? 'Deselect' : 'Select'} ${outputSet.label}`}
             >
               {outputSet.label}
             </TogglePill>
@@ -94,10 +90,7 @@ export function FaviconOptionsPanel ({
                       key={size}
                       pressed={selectedSizes.has(size)}
                       onClick={() => onSizeToggle(size)}
-                      ariaLabel={t('faviconGenerator.toggleSize', {
-                        size,
-                        action: selectedSizes.has(size) ? t('faviconGenerator.deselect') : t('faviconGenerator.select')
-                      })}
+                      ariaLabel={`${selectedSizes.has(size) ? 'Deselect' : 'Select'} ${size}x${size}`}
                     >
                       {size}×{size}
                     </TogglePill>
@@ -116,10 +109,7 @@ export function FaviconOptionsPanel ({
                       key={size}
                       pressed={selectedSizes.has(size)}
                       onClick={() => onSizeToggle(size)}
-                      ariaLabel={t('faviconGenerator.toggleSize', {
-                        size,
-                        action: selectedSizes.has(size) ? t('faviconGenerator.deselect') : t('faviconGenerator.select')
-                      })}
+                      ariaLabel={`${selectedSizes.has(size) ? 'Deselect' : 'Select'} ${size}x${size}`}
                     >
                       {size}×{size}
                     </TogglePill>

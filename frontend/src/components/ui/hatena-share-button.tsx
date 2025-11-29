@@ -1,7 +1,8 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
+
+import { useTranslations } from '@/lib/i18n/client'
 
 import { HatenaIcon } from '../icons/hatena-icon'
 

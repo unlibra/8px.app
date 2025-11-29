@@ -1,9 +1,10 @@
-import { useTranslations } from 'next-intl'
+'use client'
 
 import { LogoIcon } from '@/components/icons/logo-icon'
 import { ToolCard } from '@/components/tool-card'
 import { siteConfig } from '@/config/site'
 import { categories } from '@/config/tools'
+import { useTranslations } from '@/lib/i18n/client'
 
 export default function Home () {
   const t = useTranslations()

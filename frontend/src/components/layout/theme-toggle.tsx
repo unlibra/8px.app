@@ -2,9 +2,10 @@
 
 import { CloseButton, Popover, PopoverButton, PopoverPanel, Transition } from '@headlessui/react'
 import { MoonIcon, SunIcon } from '@heroicons/react/24/solid'
-import { useTranslations } from 'next-intl'
 import { useTheme } from 'next-themes'
 import { useCallback, useEffect, useRef, useState } from 'react'
+
+import { useTranslations } from '@/lib/i18n/client'
 
 function ThemePopoverContent ({
   isLight,

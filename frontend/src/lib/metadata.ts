@@ -1,17 +1,22 @@
 import type { Metadata } from 'next'
-import { getLocale, getTranslations } from 'next-intl/server'
 
 import { siteConfig } from '@/config/site'
+import { getMessages } from '@/lib/i18n/server'
+import type { Locale } from '@/lib/i18n/types'
 
 /**
  * Generate metadata for tool pages with proper i18n support
  */
-export async function generateToolMetadata (toolId: string, pathname: string): Promise<Metadata> {
-  const locale = await getLocale()
-  const t = await getTranslations()
+export async function generateToolMetadata (
+  toolId: string,
+  pathname: string,
+  locale: Locale
+): Promise<Metadata> {
+  const messages = await getMessages(locale)
+  const tool = messages.tools[toolId as keyof typeof messages.tools]
 
-  const title = t(`tools.${toolId}.name`)
-  const description = t(`tools.${toolId}.description`).replace(/\r?\n/g, '')
+  const title = tool.name
+  const description = tool.description.replace(/\r?\n/g, '')
   const url = locale === 'ja' ? pathname : `/en${pathname}`
 
   return {

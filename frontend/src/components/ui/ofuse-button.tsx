@@ -1,9 +1,8 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
-
 import { OfuseIcon } from '@/components/icons/ofuse-icon'
 import { siteConfig } from '@/config/site'
+import { useTranslations } from '@/lib/i18n/client'
 
 export function OfuseButton () {
   const t = useTranslations()
