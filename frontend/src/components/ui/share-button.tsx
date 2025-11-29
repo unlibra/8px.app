@@ -18,7 +18,7 @@ export function ShareButton () {
 
     if (navigator.share) {
       try {
-        await navigator.share({ title, url, text })
+        await navigator.share({ text })
         return
       } catch (e) {
         //
