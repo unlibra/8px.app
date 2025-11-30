@@ -18,16 +18,16 @@ export function ShareButton () {
 
     if (navigator.share) {
       try {
-        await navigator.share({ text })
-        return
-      } catch (e) {
-        //
+        await navigator.share({ title, url })
+      } catch {
+        // User cancelled share - do nothing
       }
+      return
     }
 
     navigator.clipboard.writeText(text)
       .then(() => toast.info(t('common.copied')))
-      .catch(() => toast.error('common.error'))
+      .catch(() => toast.error(t('common.error')))
   }, [toast, t])
 
   return (
