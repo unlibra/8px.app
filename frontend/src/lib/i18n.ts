@@ -17,10 +17,3 @@ const { client, server, Link, Provider } = define({
 export { Link, Provider }
 export const { useMessages, useTranslations, useLocale } = client
 export const { getMessages, getTranslations } = server
-
-export function getLocalizedPath (path: string, locale: Locale): string {
-  if (locale === defaultLocale) {
-    return path
-  }
-  return `/${locale}${path}`
-}
