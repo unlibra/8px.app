@@ -2,7 +2,7 @@ import { LogoIcon } from '@/components/icons/logo-icon'
 import { siteConfig } from '@/config/site'
 import { categories } from '@/config/tools'
 import type { Locale } from '@/lib/i18n'
-import { getMessages, getTranslations } from '@/lib/i18n/server'
+import { getMessages, getTranslations } from '@/lib/i18n'
 
 import { AboutSection } from './_components/about-section'
 import { ToolCard } from './_components/tool-card'
@@ -56,7 +56,7 @@ export default async function Home ({ params }: { params: Promise<{ locale: Loca
             {messages.site.name}
           </h1>
           <p className='whitespace-pre-line font-medium'>
-            {t('site.heroDescription')}
+            {t('site.description')}
           </p>
         </div>
       </div>
