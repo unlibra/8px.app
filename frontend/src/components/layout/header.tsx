@@ -1,11 +1,10 @@
 import { LogoIcon } from '@/components/icons/logo-icon'
 import { categories } from '@/config/tools'
 import type { Locale } from '@/lib/i18n'
-import { Link } from '@/lib/i18n/client'
-import { getMessages } from '@/lib/i18n/server'
+import { getMessages, Link } from '@/lib/i18n'
 
 import { CategoryPopover } from './category-popover'
-import { LocaleSwitcher } from './locale-switcher'
+import { LanguageSwitcher } from './language-switcher'
 import { MobileMenuButton } from './mobile-menu'
 import { ThemeToggle } from './theme-toggle'
 
@@ -37,7 +36,7 @@ export async function Header ({ locale }: { locale: Locale }) {
           </div>
 
           {/* Locale Switcher */}
-          <LocaleSwitcher />
+          <LanguageSwitcher />
 
           {/* Theme Toggle */}
           <ThemeToggle />
@@ -45,7 +44,7 @@ export async function Header ({ locale }: { locale: Locale }) {
 
         {/* Mobile Controls */}
         <div className='z-10 flex items-center gap-2 sm:hidden'>
-          <LocaleSwitcher />
+          <LanguageSwitcher />
           <ThemeToggle />
         </div>
       </nav>

@@ -6,32 +6,31 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 import type { Locale } from '@/lib/i18n'
-import { getLocalizedPath, locales } from '@/lib/i18n'
-import { useLocale } from '@/lib/i18n/client'
+import { defaultLocale, locales, useLocale } from '@/lib/i18n'
 
 const localeNames: Record<string, string> = {
   ja: '日本語',
   en: 'English'
 }
 
-export function LocaleSwitcher () {
+export function LanguageSwitcher () {
   const locale = useLocale()
   const pathname = usePathname()
 
   // Remove current locale prefix from pathname to get base path
   const getBasePath = () => {
-    // pathname is always the internal path (e.g., /ja/iromide or /en/iromide)
-    // Remove locale prefix: /ja/iromide -> /iromide, /en/iromide -> /iromide
-    // Use regex to ensure we only match locale at the start of the path
     const localePrefix = new RegExp(`^/${locale}(/|$)`)
     const basePath = pathname.replace(localePrefix, '/')
     return basePath === '' ? '/' : basePath
   }
 
-  // Generate localized path for target locale
-  const getLocalizedPathForLocale = (targetLocale: Locale) => {
+  // Generate localized path for new locale
+  const getLocalizedPath = (newLocale: Locale) => {
     const basePath = getBasePath()
-    return getLocalizedPath(basePath, targetLocale)
+    if (newLocale === defaultLocale) {
+      return basePath
+    }
+    return `/${newLocale}${basePath}`
   }
 
   return (
@@ -58,7 +57,7 @@ export function LocaleSwitcher () {
               <CloseButton
                 key={loc}
                 as={Link}
-                href={getLocalizedPathForLocale(loc)}
+                href={getLocalizedPath(loc)}
                 className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm outline-none transition-colors ${
                   locale === loc
                     ? 'bg-sky-50 dark:bg-atom-one-dark-lighter'
