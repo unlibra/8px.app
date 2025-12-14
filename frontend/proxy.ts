@@ -1,5 +1,5 @@
 /**
- * Next.js Middleware for i18n routing
+ * Next.js Proxy for i18n routing (Next.js 16+)
  *
  * Handles language detection and routing for all non-locale-prefixed paths:
  * - Japanese (Accept-Language: ja): Internal rewrite to /ja/* content
@@ -10,7 +10,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 const locales = ['ja', 'en']
 const defaultLocale = 'en'
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Check if the path already has a locale prefix
