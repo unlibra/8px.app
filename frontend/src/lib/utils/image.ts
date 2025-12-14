@@ -11,9 +11,109 @@ export type ImageProcessingOptions = {
 }
 
 /**
+ * Parse SVG dimensions from viewBox or width/height attributes
+ */
+function parseSvgDimensions (svgText: string): { width: number, height: number } | null {
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(svgText, 'image/svg+xml')
+  const svg = doc.querySelector('svg')
+
+  if (!svg) return null
+
+  // Try width/height attributes first
+  const widthAttr = svg.getAttribute('width')
+  const heightAttr = svg.getAttribute('height')
+
+  if (widthAttr && heightAttr) {
+    const width = parseFloat(widthAttr)
+    const height = parseFloat(heightAttr)
+    if (!isNaN(width) && !isNaN(height) && width > 0 && height > 0) {
+      return { width, height }
+    }
+  }
+
+  // Fall back to viewBox
+  const viewBox = svg.getAttribute('viewBox')
+  if (viewBox) {
+    const parts = viewBox.trim().split(/[\s,]+/)
+    if (parts.length === 4) {
+      const width = parseFloat(parts[2])
+      const height = parseFloat(parts[3])
+      if (!isNaN(width) && !isNaN(height) && width > 0 && height > 0) {
+        return { width, height }
+      }
+    }
+  }
+
+  return null
+}
+
+/**
  * Load image from file
+ * For SVG files without width/height attributes, extracts dimensions from viewBox
  */
 export async function loadImageFromFile (file: File): Promise<HTMLImageElement> {
+  const isSvg = file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.svg')
+
+  if (isSvg) {
+    // Read SVG content to extract dimensions
+    const svgText = await file.text()
+    const dimensions = parseSvgDimensions(svgText)
+
+    // If we have viewBox dimensions, inject width/height attributes upfront
+    // This avoids the browser's default 150x150 sizing for SVGs without explicit dimensions
+    if (dimensions) {
+      const svgWithDimensions = svgText.replace(
+        /<svg([^>]*)>/,
+        (match, attrs) => {
+          // Remove existing width/height if present
+          const cleanedAttrs = attrs
+            .replace(/\s*width\s*=\s*["'][^"']*["']/gi, '')
+            .replace(/\s*height\s*=\s*["'][^"']*["']/gi, '')
+          return `<svg${cleanedAttrs} width="${dimensions.width}" height="${dimensions.height}">`
+        }
+      )
+
+      return new Promise((resolve, reject) => {
+        const img = new Image()
+        const blob = new Blob([svgWithDimensions], { type: 'image/svg+xml' })
+        const url = URL.createObjectURL(blob)
+
+        img.onload = () => {
+          URL.revokeObjectURL(url)
+          resolve(img)
+        }
+
+        img.onerror = () => {
+          URL.revokeObjectURL(url)
+          reject(new Error('Failed to load image'))
+        }
+
+        img.src = url
+      })
+    }
+
+    // No dimensions found, load as-is
+    return new Promise((resolve, reject) => {
+      const img = new Image()
+      const blob = new Blob([svgText], { type: 'image/svg+xml' })
+      const url = URL.createObjectURL(blob)
+
+      img.onload = () => {
+        URL.revokeObjectURL(url)
+        resolve(img)
+      }
+
+      img.onerror = () => {
+        URL.revokeObjectURL(url)
+        reject(new Error('Failed to load image'))
+      }
+
+      img.src = url
+    })
+  }
+
+  // Non-SVG files
   return new Promise((resolve, reject) => {
     const img = new Image()
     const url = URL.createObjectURL(file)
