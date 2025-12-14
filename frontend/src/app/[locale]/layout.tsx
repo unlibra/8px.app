@@ -1,3 +1,4 @@
+import { Analytics } from '@/components/analytics'
 import type { Metadata } from 'next'
 // eslint-disable-next-line camelcase
 import { IBM_Plex_Sans_JP, Outfit, Roboto_Mono, Zen_Maru_Gothic } from 'next/font/google'
@@ -153,7 +154,8 @@ export default async function LocaleLayout ({
             <Footer locale={locale as Locale} />
           </div>
         </Providers>
-              </body>
+        <Analytics />
+      </body>
     </html>
   )
 }
