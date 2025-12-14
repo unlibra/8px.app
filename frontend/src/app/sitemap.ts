@@ -39,10 +39,5 @@ export default function sitemap (): MetadataRoute.Sitemap {
     }
   }
 
-  // Add privacy policy page (Japanese only, no locale prefix)
-  routes.push({
-    url: `${baseUrl}/privacy`
-  })
-
   return routes
 }

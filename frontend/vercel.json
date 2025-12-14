@@ -1,9 +1,47 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/lab",
+      "has": [
+        {
+          "type": "header",
+          "key": "accept-language",
+          "value": "^ja.*"
+        }
+      ],
+      "destination": "/lab/ja",
+      "permanent": false
+    },
+    {
+      "source": "/lab",
+      "missing": [
+        {
+          "type": "header",
+          "key": "accept-language",
+          "value": "^ja.*"
+        }
+      ],
+      "destination": "/lab/en",
+      "permanent": false
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://unlibra.com"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Url, Content-Type"
+        },
         {
           "key": "X-Content-Type-Options",
           "value": "nosniff"
@@ -30,7 +68,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com https://vitals.vercel-insights.com https://cdn.vercel-insights.com https://vercel.live; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' blob: https://api.8px.app https://*.vercel.app https://vitals.vercel-insights.com https://vercel.live; frame-src https://vercel.live; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com https://vitals.vercel-insights.com https://cdn.vercel-insights.com https://vercel.live; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' blob: https://*.vercel.app https://vitals.vercel-insights.com https://vercel.live; frame-src https://vercel.live; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
         }
       ]
     },

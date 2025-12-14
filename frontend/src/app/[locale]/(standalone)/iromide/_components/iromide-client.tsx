@@ -199,7 +199,7 @@ export function IromideClient ({ supportSection }: { supportSection: ReactNode }
       // Check if Web Share API with files is supported
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         try {
-          const shareUrl = `${siteConfig.url ?? 'https://8px.app'}/iromide`
+          const shareUrl = `${siteConfig.url ?? 'https://unlibra.com/lab'}/iromide`
           await navigator.share({
             files: [file],
             text: `${message || t('iromide.shareText')} - ${shareUrl}`

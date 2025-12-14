@@ -7,15 +7,11 @@ if (!apiUrl) {
 const normalizedApiUrl = apiUrl.replace(/\/+$/, '')
 
 const nextConfig: NextConfig = {
+  basePath: '/lab',
   reactStrictMode: true,
   env: {
     // Ensure clients get a normalized value (no trailing slash)
     NEXT_PUBLIC_API_URL: normalizedApiUrl
-  },
-  // Image optimization configuration
-  images: {
-    loader: 'custom',
-    loaderFile: './src/lib/cloudflare-loader.ts'
   }
 }
 

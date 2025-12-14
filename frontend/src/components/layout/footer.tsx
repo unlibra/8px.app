@@ -103,15 +103,18 @@ export async function Footer ({ locale }: { locale: Locale }) {
                   </a>
                 </li>
               )}
-              <li>
-                <Link
-                  href='/privacy'
-                  locale={false}
-                  className='text-sm text-gray-600 transition-all hover:underline dark:text-gray-400'
-                >
-                  {t('footer.privacyPolicy')}
-                </Link>
-              </li>
+              {siteConfig.links.privacy && (
+                <li>
+                  <a
+                    href={siteConfig.links.privacy}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='text-sm text-gray-600 transition-all hover:underline dark:text-gray-400'
+                  >
+                    {t('footer.privacyPolicy')}
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
         </div>
