@@ -1,5 +1,4 @@
 import { Analytics } from '@vercel/analytics/next'
-import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata } from 'next'
 // eslint-disable-next-line camelcase
 import { IBM_Plex_Sans_JP, Outfit, Roboto_Mono, Zen_Maru_Gothic } from 'next/font/google'
@@ -156,7 +155,6 @@ export default async function LocaleLayout ({
           </div>
         </Providers>
         <Analytics />
-        <SpeedInsights />
       </body>
     </html>
   )
