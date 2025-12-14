@@ -14,7 +14,7 @@ export const privacyPolicy = {
       id: 'introduction',
       title: '1. はじめに',
       body: `
-        8px app（以下「本サイト」）は、ユーザーのプライバシーを尊重し、個人情報の保護に努めます。
+        Lib Lab（以下「本サイト」）は、ユーザーのプライバシーを尊重し、個人情報の保護に努めます。
         本プライバシーポリシーでは、本サイトにおける情報の取り扱いについて説明します。
       `,
       children: null
@@ -123,7 +123,7 @@ export const privacyPolicy = {
         本プライバシーポリシーに関するご質問やご不明な点がございましたら、以下までお問い合わせください。
 
         運営者: unlibra
-        お問い合わせ: https://github.com/unlibra/8px.app/discussions
+        お問い合わせ: https://github.com/unlibra/liblab/discussions
       `,
       children: null
     }

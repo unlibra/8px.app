@@ -1,4 +1,4 @@
-# 8px.app
+# Lib Lab
 
 A toolkit for streamlining web and UI development.
 Features Tailwind CSS palette generation, high-precision image color extraction, SVG-compatible favicon generator, and SVG compression.
